@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=7.4.0">
+  <link rel="mask-icon" href="/images/favicon.ico?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Mouse" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="简介Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。它通常被称为数据结构服务器，因为值（value）可以是 字符串(String), 哈希(Map), 列表(list), 集合(sets) 和 有序集合(sorted sets)等类型。">
+<meta name="keywords" content="Redis Source">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis源码解析（一）">
+<meta property="og:url" content="https://mousemin.github.io/2019/06/03/redis源码解析（一）/index.html">
+<meta property="og:site_name" content="Mouse">
+<meta property="og:description" content="简介Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。它通常被称为数据结构服务器，因为值（value）可以是 字符串(String), 哈希(Map), 列表(list), 集合(sets) 和 有序集合(sorted sets)等类型。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-10T09:49:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis源码解析（一）">
+<meta name="twitter:description" content="简介Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。它通常被称为数据结构服务器，因为值（value）可以是 字符串(String), 哈希(Map), 列表(list), 集合(sets) 和 有序集合(sorted sets)等类型。">
+  <link rel="canonical" href="https://mousemin.github.io/2019/06/03/redis源码解析（一）/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>redis源码解析（一） | Mouse</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mouse</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://mousemin.github.io/2019/06/03/redis源码解析（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mousemin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mouse">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">redis源码解析（一）
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-03 14:24:00" itemprop="dateCreated datePublished" datetime="2019-06-03T14:24:00+08:00">2019-06-03</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-10 17:49:19" itemprop="dateModified" datetime="2019-10-10T17:49:19+08:00">2019-10-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。它通常被称为数据结构服务器，因为值（value）可以是 字符串(String), 哈希(Map), 列表(list), 集合(sets) 和 有序集合(sorted sets)等类型。</p><a id="more"></a>
+<p>  由于该库代码优美，实现巧妙，值得学习，因此从本篇开始将学习最新版本<code>5.0.5</code> redis的源码实现。这一切，就从最基础的数据结构sds开始。</p>
+<h2 id="动态字符串sds结构体"><a href="#动态字符串sds结构体" class="headerlink" title="动态字符串sds结构体"></a>动态字符串sds结构体</h2><p>动态字符串sds的实现主要在sds.c和sds.h中，其中头文件主要是实现结构体和几个基本函数，源文件中定义了动态字符串所需要的函数。基本功能和C++ STL的vector动态数组类似。</p>
+<p>下面就来看看sds结构体吧 。sds本身只是char *的别名，源码中定义如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">char</span> *sds;</span><br></pre></td></tr></table></figure>
+
+<p>根据sds动态字符串的长度不同，定义了不同的sdshdr结构体，存储sds相应的信息以及最后的buf（使用柔性数组从而可变长）。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr5</span> &#123;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, and 5 msb of string length */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr8</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint8_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr16</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint16_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint16_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr32</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr64</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint64_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint64_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以看到，这里主要区别在于len和alloc采用的类型长度不同，而这两个变量分别表示了当前buf的长度，以及已经分配的内存大小。flags用于表示当前采用哪种类型的sdshdr。</p>
+<h2 id="基本函数"><a href="#基本函数" class="headerlink" title="基本函数"></a>基本函数</h2><p>下面来看下sds.h中给出的基本函数。首先需要了解两个宏定义，源码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取sdshdr的指针 sh </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SDS_HDR_VAR(T,s) struct sdshdr##T *sh = (void*)((s)-(sizeof(struct sdshdr##T)));</span></span><br><span class="line"><span class="comment">// 获取sds的首地址</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SDS_HDR(T,s) ((struct sdshdr##T *)((s)-(sizeof(struct sdshdr##T))))</span></span><br><span class="line"><span class="comment">// 获取sdshdr5长度</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SDS_TYPE_5_LEN(f) ((f)&gt;&gt;SDS_TYPE_BITS)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="获取sds的长度"><a href="#获取sds的长度" class="headerlink" title="获取sds的长度"></a>获取sds的长度</h3><p>SDS_HDR获取结构体指针后读取len的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> size_t <span class="title">sdslen</span><span class="params">(<span class="keyword">const</span> sds s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags = s[<span class="number">-1</span>];</span><br><span class="line">    <span class="keyword">switch</span>(flags&amp;SDS_TYPE_MASK) &#123;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_5:</span><br><span class="line">            <span class="keyword">return</span> SDS_TYPE_5_LEN(flags);</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_8:</span><br><span class="line">            <span class="keyword">return</span> SDS_HDR(<span class="number">8</span>,s)-&gt;len;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_16:</span><br><span class="line">            <span class="keyword">return</span> SDS_HDR(<span class="number">16</span>,s)-&gt;len;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_32:</span><br><span class="line">            <span class="keyword">return</span> SDS_HDR(<span class="number">32</span>,s)-&gt;len;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_64:</span><br><span class="line">            <span class="keyword">return</span> SDS_HDR(<span class="number">64</span>,s)-&gt;len;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取sds的剩余空间"><a href="#获取sds的剩余空间" class="headerlink" title="获取sds的剩余空间"></a>获取sds的剩余空间</h3><p>返回alloc-len的值，即当前剩余可用空间。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取sds的剩余空间</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> size_t <span class="title">sdsavail</span><span class="params">(<span class="keyword">const</span> sds s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags = s[<span class="number">-1</span>];</span><br><span class="line">    <span class="keyword">switch</span>(flags&amp;SDS_TYPE_MASK) &#123;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_5: &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_8: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">8</span>,s);</span><br><span class="line">            <span class="keyword">return</span> sh-&gt;alloc - sh-&gt;len;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_16: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">16</span>,s);</span><br><span class="line">            <span class="keyword">return</span> sh-&gt;alloc - sh-&gt;len;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_32: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">32</span>,s);</span><br><span class="line">            <span class="keyword">return</span> sh-&gt;alloc - sh-&gt;len;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_64: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">64</span>,s);</span><br><span class="line">            <span class="keyword">return</span> sh-&gt;alloc - sh-&gt;len;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="设置新的sds长度"><a href="#设置新的sds长度" class="headerlink" title="设置新的sds长度"></a>设置新的sds长度</h3><p>sdshdr设置新的长度</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置新的sds长度</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">sdssetlen</span><span class="params">(sds s, <span class="keyword">size_t</span> newlen)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags = s[<span class="number">-1</span>];</span><br><span class="line">    <span class="keyword">switch</span>(flags&amp;SDS_TYPE_MASK) &#123;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_5:</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">unsigned</span> <span class="keyword">char</span> *fp = ((<span class="keyword">unsigned</span> <span class="keyword">char</span>*)s)<span class="number">-1</span>;</span><br><span class="line">                *fp = SDS_TYPE_5 | (newlen &lt;&lt; SDS_TYPE_BITS);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_8:</span><br><span class="line">            SDS_HDR(<span class="number">8</span>,s)-&gt;len = newlen;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_16:</span><br><span class="line">            SDS_HDR(<span class="number">16</span>,s)-&gt;len = newlen;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_32:</span><br><span class="line">            SDS_HDR(<span class="number">32</span>,s)-&gt;len = newlen;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_64:</span><br><span class="line">            SDS_HDR(<span class="number">64</span>,s)-&gt;len = newlen;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="sds的长度在现有长度的基础上添加inc"><a href="#sds的长度在现有长度的基础上添加inc" class="headerlink" title="sds的长度在现有长度的基础上添加inc"></a>sds的长度在现有长度的基础上添加inc</h3><p>在现有的len基础上增加inc</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">sdsinclen</span><span class="params">(sds s, <span class="keyword">size_t</span> inc)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags = s[<span class="number">-1</span>];</span><br><span class="line">    <span class="keyword">switch</span>(flags&amp;SDS_TYPE_MASK) &#123;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_5:</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">unsigned</span> <span class="keyword">char</span> *fp = ((<span class="keyword">unsigned</span> <span class="keyword">char</span>*)s)<span class="number">-1</span>;</span><br><span class="line">                <span class="keyword">unsigned</span> <span class="keyword">char</span> newlen = SDS_TYPE_5_LEN(flags)+inc;</span><br><span class="line">                *fp = SDS_TYPE_5 | (newlen &lt;&lt; SDS_TYPE_BITS);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_8:</span><br><span class="line">            SDS_HDR(<span class="number">8</span>,s)-&gt;len += inc;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_16:</span><br><span class="line">            SDS_HDR(<span class="number">16</span>,s)-&gt;len += inc;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_32:</span><br><span class="line">            SDS_HDR(<span class="number">32</span>,s)-&gt;len += inc;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_64:</span><br><span class="line">            SDS_HDR(<span class="number">64</span>,s)-&gt;len += inc;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取sds分配的内存大小"><a href="#获取sds分配的内存大小" class="headerlink" title="获取sds分配的内存大小"></a>获取sds分配的内存大小</h3><p>sdshdr分配的空间大小，即alloc值</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取sds分配的内存大小</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> size_t <span class="title">sdsalloc</span><span class="params">(<span class="keyword">const</span> sds s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags = s[<span class="number">-1</span>];</span><br><span class="line">    <span class="keyword">switch</span>(flags&amp;SDS_TYPE_MASK) &#123;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_5:</span><br><span class="line">            <span class="keyword">return</span> SDS_TYPE_5_LEN(flags);</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_8:</span><br><span class="line">            <span class="keyword">return</span> SDS_HDR(<span class="number">8</span>,s)-&gt;alloc;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_16:</span><br><span class="line">            <span class="keyword">return</span> SDS_HDR(<span class="number">16</span>,s)-&gt;alloc;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_32:</span><br><span class="line">            <span class="keyword">return</span> SDS_HDR(<span class="number">32</span>,s)-&gt;alloc;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_64:</span><br><span class="line">            <span class="keyword">return</span> SDS_HDR(<span class="number">64</span>,s)-&gt;alloc;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="重新为sds分配内存的大小"><a href="#重新为sds分配内存的大小" class="headerlink" title="重新为sds分配内存的大小"></a>重新为sds分配内存的大小</h3><p>sdshdr设置新的alloc值</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 重新为sds分配内存的大小</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">sdssetalloc</span><span class="params">(sds s, <span class="keyword">size_t</span> newlen)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags = s[<span class="number">-1</span>];</span><br><span class="line">    <span class="keyword">switch</span>(flags&amp;SDS_TYPE_MASK) &#123;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_5:</span><br><span class="line">            <span class="comment">/* Nothing to do, this type has no total allocation info. */</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_8:</span><br><span class="line">            SDS_HDR(<span class="number">8</span>,s)-&gt;alloc = newlen;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_16:</span><br><span class="line">            SDS_HDR(<span class="number">16</span>,s)-&gt;alloc = newlen;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_32:</span><br><span class="line">            SDS_HDR(<span class="number">32</span>,s)-&gt;alloc = newlen;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_64:</span><br><span class="line">            SDS_HDR(<span class="number">64</span>,s)-&gt;alloc = newlen;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Redis-Source/" rel="tag"># Redis Source</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/06/03/c语言中-attribute-的意义/" rel="next" title="c语言中__attribute__的意义">
+                  <i class="fa fa-chevron-left"></i> c语言中__attribute__的意义
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/06/23/redis分布式锁/" rel="prev" title="redis分布式锁">
+                  redis分布式锁 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态字符串sds结构体"><span class="nav-number">2.</span> <span class="nav-text">动态字符串sds结构体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本函数"><span class="nav-number">3.</span> <span class="nav-text">基本函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#获取sds的长度"><span class="nav-number">3.1.</span> <span class="nav-text">获取sds的长度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取sds的剩余空间"><span class="nav-number">3.2.</span> <span class="nav-text">获取sds的剩余空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置新的sds长度"><span class="nav-number">3.3.</span> <span class="nav-text">设置新的sds长度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sds的长度在现有长度的基础上添加inc"><span class="nav-number">3.4.</span> <span class="nav-text">sds的长度在现有长度的基础上添加inc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取sds分配的内存大小"><span class="nav-number">3.5.</span> <span class="nav-text">获取sds分配的内存大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重新为sds分配内存的大小"><span class="nav-number">3.6.</span> <span class="nav-text">重新为sds分配内存的大小</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">mousemin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mousemin</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=7.4.0">
+  <link rel="mask-icon" href="/images/favicon.ico?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Mouse" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="调试器域公开了JavaScript调试功能。 它允许设置和删除断点，逐步执行，探索堆栈跟踪等。MethodsDebugger.continueToLocation继续执行直到到达特定位置参数 location Location 位置继续 targetCallFrames[optional] string 允许值: any, current">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Chrome Devtools Debugger">
+<meta property="og:url" content="https://mousemin.github.io/2019/10/10/devtools-debugger/index.html">
+<meta property="og:site_name" content="Mouse">
+<meta property="og:description" content="调试器域公开了JavaScript调试功能。 它允许设置和删除断点，逐步执行，探索堆栈跟踪等。MethodsDebugger.continueToLocation继续执行直到到达特定位置参数 location Location 位置继续 targetCallFrames[optional] string 允许值: any, current">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-10T09:49:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chrome Devtools Debugger">
+<meta name="twitter:description" content="调试器域公开了JavaScript调试功能。 它允许设置和删除断点，逐步执行，探索堆栈跟踪等。MethodsDebugger.continueToLocation继续执行直到到达特定位置参数 location Location 位置继续 targetCallFrames[optional] string 允许值: any, current">
+  <link rel="canonical" href="https://mousemin.github.io/2019/10/10/devtools-debugger/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Chrome Devtools Debugger | Mouse</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mouse</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://mousemin.github.io/2019/10/10/devtools-debugger/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mousemin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mouse">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Chrome Devtools Debugger
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-10 16:10:21 / 修改时间：17:49:19" itemprop="dateCreated datePublished" datetime="2019-10-10T16:10:21+08:00">2019-10-10</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/chrome-devtools-protocol/" itemprop="url" rel="index"><span itemprop="name">chrome devtools protocol</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>调试器域公开了JavaScript调试功能。 它允许设置和删除断点，逐步执行，探索堆栈跟踪等。</p><h2 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h2><h3 id="Debugger-continueToLocation"><a href="#Debugger-continueToLocation" class="headerlink" title="Debugger.continueToLocation"></a>Debugger.continueToLocation</h3><p>继续执行直到到达特定位置</p><h4 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>location <strong>Location</strong> 位置继续</li>
+<li>targetCallFrames<font color="blue">[optional]</font> <strong>string</strong> <strong>允许值:</strong> <code>any</code>, <code>current</code></li>
+</ul><a id="more"></a>
+
+
+<h3 id="Debugger-disable"><a href="#Debugger-disable" class="headerlink" title="Debugger.disable"></a>Debugger.disable</h3><p>禁用给定页面的调试器</p>
+<h3 id="Debugger-enable"><a href="#Debugger-enable" class="headerlink" title="Debugger.enable"></a>Debugger.enable</h3><p>为给定的页面启用调试器。 在收到此命令的结果之前，客户端不应假定调试已启用。</p>
+<h4 id="参数-1"><a href="#参数-1" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>maxScriptsCacheSize<font color="blue">[optional]</font> <strong>number</strong> 调试器可以容纳的已收集脚本（其他堆对象未引用）的最大大小（以字节为单位）。 如果省略参数，则没有限制。<font color="red">[实验性质]</font></li>
+</ul>
+<h4 id="返回"><a href="#返回" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>debuggerId <strong>Runtime.UniqueDebuggerId</strong> 调试器的唯一标识符。<font color="red">[实验性质]</font></li>
+</ul>
+<h3 id="Debugger-evaluateOnCallFrame"><a href="#Debugger-evaluateOnCallFrame" class="headerlink" title="Debugger.evaluateOnCallFrame"></a>Debugger.evaluateOnCallFrame</h3><p>在给定的调用框架上评估表达式。</p>
+<h4 id="参数-2"><a href="#参数-2" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>callFrameId <strong>CallFrameId</strong> 框架标识符</li>
+<li>expression <strong>string</strong> 要评估的表达式</li>
+<li>objectGroup<font color="blue">[optional]</font> <strong>string</strong> 要放入结果的字符串对象组名称（允许使用<code>releaseObjectGroup</code>快速释放结果对象句柄）。</li>
+<li>includeCommandLineAPI<font color="blue">[optional]</font> <strong>boolean</strong> 指定命令行API是否应可用于求值表达式，默认为false</li>
+<li>silent<font color="blue">[optional]</font> <strong>boolean</strong> 在静默模式下，不会报告评估期间抛出的异常，并且不会暂停执行。 覆盖<code>setPauseOnException</code>状态。</li>
+<li>returnByValue<font color="blue">[optional]</font> <strong>boolean</strong> 结果是否应为应按值发送的JSON对象</li>
+<li>generatePreview<font color="blue">[optional]</font> <strong>boolean</strong> 是否应为结果生成预览。 <font color="red">[实验性质]</font> </li>
+<li>throwOnSideEffect<font color="blue">[optional]</font> <strong>boolean</strong> 如果在评估过程中不能排除副作用，是否抛出异常。</li>
+<li>timeout<font color="blue">[optional]</font> <strong>Runtime.TimeDelta</strong> 超时后终止执行（毫秒数）<font color="red">[实验性质]</font></li>
+</ul>
+<h4 id="返回-1"><a href="#返回-1" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>result <strong>Runtime.RemoteObject</strong>  评估结果的对象包装</li>
+<li>exceptionDetails<font color="blue">[optional]</font> <strong>Runtime.ExceptionDetails</strong> 异常详细信息</li>
+</ul>
+<h3 id="Debugger-getPossibleBreakpoints"><a href="#Debugger-getPossibleBreakpoints" class="headerlink" title="Debugger.getPossibleBreakpoints"></a>Debugger.getPossibleBreakpoints</h3><p>返回断点的可能位置。 开始和结束范围位置中的scriptId应该相同。</p>
+<h4 id="参数-3"><a href="#参数-3" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>start <strong>Location</strong> 范围的起点，以搜索可能的断点位置。</li>
+<li>end<font color="blue">[optional]</font> <strong>Location</strong> 在（不包括）中搜索可能的断点位置的范围的结尾。 如果未指定，则将脚本结尾用作范围结尾。</li>
+<li>restrictToFunction<font color="blue">[optional]</font> <strong>boolean</strong> 仅考虑与开始具有相同（非嵌套）功能的位置。</li>
+</ul>
+<h4 id="返回-2"><a href="#返回-2" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>locations <strong>array BreakLocation</strong> 可能的断点位置列表。</li>
+</ul>
+<h3 id="Debugger-getScriptSource"><a href="#Debugger-getScriptSource" class="headerlink" title="Debugger.getScriptSource"></a>Debugger.getScriptSource</h3><p>返回具有给定id的脚本的源。</p>
+<h4 id="参数-4"><a href="#参数-4" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>scriptId <strong>Runtime.ScriptId</strong> 要获取源代码的脚本的ID。</li>
+</ul>
+<h4 id="返回-3"><a href="#返回-3" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>scriptSource <strong>string</strong> 脚本源代码</li>
+</ul>
+<h3 id="Debugger-getWasmBytecode"><a href="#Debugger-getWasmBytecode" class="headerlink" title="Debugger.getWasmBytecode"></a>Debugger.getWasmBytecode</h3><p>返回具有给定ID的WebAssembly脚本的字节码。</p>
+<h4 id="参数-5"><a href="#参数-5" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>scriptId <strong>Runtime.ScriptId</strong> Wasm脚本的ID以获取源代码。</li>
+</ul>
+<h4 id="返回-4"><a href="#返回-4" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>bytecode <strong>string</strong></li>
+</ul>
+<h3 id="Debugger-getStackTrace"><a href="#Debugger-getStackTrace" class="headerlink" title="Debugger.getStackTrace"></a>Debugger.getStackTrace</h3><p>返回具有给定<code>stackTraceId</code>的堆栈跟踪<font color="red">[实验性质]</font></p>
+<h4 id="参数-6"><a href="#参数-6" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>stackTraceId <strong>Runtime.StackTraceId</strong></li>
+</ul>
+<h4 id="返回-5"><a href="#返回-5" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>stackTrace <strong>Runtime.StackTrace</strong></li>
+</ul>
+<h3 id="Debugger-pause"><a href="#Debugger-pause" class="headerlink" title="Debugger.pause"></a>Debugger.pause</h3><p>在下一个JavaScript语句上停止。</p>
+<h3 id="Debugger-pauseOnAsyncCall"><a href="#Debugger-pauseOnAsyncCall" class="headerlink" title="Debugger.pauseOnAsyncCall"></a>Debugger.pauseOnAsyncCall</h3><p>禁用给定页面的调试器<font color="red">[实验性质]</font><font color="#FFCC80">[已淘汰]</font></p>
+<h4 id="参数-7"><a href="#参数-7" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>parentStackTraceId <strong>Runtime.StackTraceId</strong> 当启动具有给定堆栈跟踪的异步调用时，调试器将暂停</li>
+</ul>
+<h3 id="Debugger-removeBreakpoint"><a href="#Debugger-removeBreakpoint" class="headerlink" title="Debugger.removeBreakpoint"></a>Debugger.removeBreakpoint</h3><p>删除JavaScript断点</p>
+<h4 id="参数-8"><a href="#参数-8" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>breakpointId <strong>BreakpointId</strong></li>
+</ul>
+<h3 id="Debugger-restartFrame"><a href="#Debugger-restartFrame" class="headerlink" title="Debugger.restartFrame"></a>Debugger.restartFrame</h3><p>从头开始重新启动特定的呼叫帧。</p>
+<h4 id="参数-9"><a href="#参数-9" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>callFrameId <strong>CallFrameId</strong> 调用框架标识符以进行评估</li>
+</ul>
+<h4 id="返回-6"><a href="#返回-6" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>callFrames <strong>array CallFrame</strong> 新的堆栈跟踪</li>
+<li>asyncStackTrace<font color="blue">[optional]</font> <strong>Runtime.StackTrace</strong> 异步堆栈跟踪（如果有）。</li>
+<li>asyncStackTraceId<font color="blue">[optional]</font> <strong>Runtime.StackTraceId</strong> 异步堆栈跟踪（如果有）。<font color="red">[实验性质]</font></li>
+</ul>
+<h3 id="Debugger-resume"><a href="#Debugger-resume" class="headerlink" title="Debugger.resume"></a>Debugger.resume</h3><p>恢复JavaScript执行</p>
+<h3 id="Debugger-searchInContent"><a href="#Debugger-searchInContent" class="headerlink" title="Debugger.searchInContent"></a>Debugger.searchInContent</h3><p>在脚本内容中搜索给定的字符串</p>
+<h4 id="参数-10"><a href="#参数-10" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>scriptId <strong>Runtime.ScriptId</strong> 要搜索的脚本的ID</li>
+<li>query <strong>string</strong> 要搜索的字符串</li>
+<li>caseSensitive<font color="blue">[optional]</font> <strong>boolean</strong> 如果为true，则搜索区分大小写。</li>
+<li>isRegex<font color="blue">[optional]</font> <strong>boolean</strong> 如果为true，则将字符串参数视为正则表达式。</li>
+</ul>
+<h4 id="返回-7"><a href="#返回-7" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>result <strong>array SearchMatch</strong> 搜索匹配列表</li>
+</ul>
+<h3 id="Debugger-setAsyncCallStackDepth"><a href="#Debugger-setAsyncCallStackDepth" class="headerlink" title="Debugger.setAsyncCallStackDepth"></a>Debugger.setAsyncCallStackDepth</h3><p>启用或禁用异步调用堆栈跟踪</p>
+<h4 id="参数-11"><a href="#参数-11" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>maxDepth <strong>integer</strong> 异步调用堆栈的最大深度。 设置为0将有效地禁用收集异步调用堆栈（默认）。</li>
+</ul>
+<h3 id="Debugger-setBlackboxPatterns"><a href="#Debugger-setBlackboxPatterns" class="headerlink" title="Debugger.setBlackboxPatterns"></a>Debugger.setBlackboxPatterns</h3><p>用传递的模式替换以前的黑盒模式。 强制后端在网址与模式之一匹配的脚本中跳过步进/暂停。 虚拟机将尝试执行多次“介入”来离开黑匣子脚本，如果操作不成功则最终求助于“脱离”<font color="red">[实验性质]</font></p>
+<h4 id="参数-12"><a href="#参数-12" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>patterns <strong>array [string]</strong> 正则表达式数组，将用于检查脚本URL的黑盒状态。</li>
+</ul>
+<h3 id="Debugger-setBlackboxedRanges"><a href="#Debugger-setBlackboxedRanges" class="headerlink" title="Debugger.setBlackboxedRanges"></a>Debugger.setBlackboxedRanges</h3><p>在黑框范围内在脚本中进行后端跳过步骤。 VM将尝试执行多次“进入”操作，从而将被列入黑名单的脚本尝试，如果未成功，则最终求助于“退出”。 Positions数组包含更改黑盒状态的位置。 第一个时间间隔未加黑框。 数组应排序。<font color="red">[实验性质]</font></p>
+<h4 id="参数-13"><a href="#参数-13" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>scriptId <strong>Runtime.ScriptId</strong> </li>
+<li>positions <strong>array ScriptPosition</strong></li>
+</ul>
+<h3 id="Debugger-setBreakpoint"><a href="#Debugger-setBreakpoint" class="headerlink" title="Debugger.setBreakpoint"></a>Debugger.setBreakpoint</h3><p>在给定位置设置JavaScript断点</p>
+<h4 id="参数-14"><a href="#参数-14" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>location <strong>Location</strong> 设置断点的位置</li>
+<li>condition<font color="blue">[optional]</font> <strong>string</strong> 用作断点条件的表达式。 如果指定，调试器将仅在此表达式的值为true时才在断点处停止</li>
+</ul>
+<h4 id="返回-8"><a href="#返回-8" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>breakpointId <strong>BreakpointId</strong> 创建的断点的ID，以供进一步参考。</li>
+<li>actualLocation <strong>Location</strong> 此断点解析到的位置</li>
+</ul>
+<h3 id="Debugger-setInstrumentationBreakpoint"><a href="#Debugger-setInstrumentationBreakpoint" class="headerlink" title="Debugger.setInstrumentationBreakpoint"></a>Debugger.setInstrumentationBreakpoint</h3><p>设置检测断点</p>
+<h4 id="参数-15"><a href="#参数-15" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>instrumentation <strong>string</strong> 仪器名称 <strong>允许值:</strong><code>beforeScriptExecution</code>, <code>beforeScriptWithSourceMapExecution</code></li>
+</ul>
+<h4 id="返回-9"><a href="#返回-9" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>breakpointId <strong>BreakpointId</strong> 创建的断点的ID，以供进一步参考</li>
+</ul>
+<h3 id="Debugger-setBreakpointByUrl"><a href="#Debugger-setBreakpointByUrl" class="headerlink" title="Debugger.setBreakpointByUrl"></a>Debugger.setBreakpointByUrl</h3><p>在URL或URL正则表达式指定的给定位置设置JavaScript断点。 发出此命令后，所有现有的已解析脚本都将解析断点并在locations属性中返回。 进一步的匹配脚本分析将导致后续的breakpointResolved事件发出。 此逻辑断点将在页面重新加载后继续存在。</p>
+<h4 id="参数-16"><a href="#参数-16" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>lineNumber <strong>integer</strong> 设置断点的行号</li>
+<li>url<font color="blue">[optional]</font> <strong>string</strong> 设置断点的资源的URL</li>
+<li>urlRegex<font color="blue">[optional]</font> <strong>string</strong> 用于设置断点的资源URL的正则表达式模式。 必须指定url或urlRegex</li>
+<li>scriptHash<font color="blue">[optional]</font> <strong>string</strong> 用于设置断点的资源的脚本哈希</li>
+<li>columnNumber<font color="blue">[optional]</font> <strong>integer</strong> 在行中设置断点的偏移量</li>
+<li>condition<font color="blue">[optional]</font> <strong>string</strong> 用作断点条件的表达式。 如果指定，调试器将仅在此表达式的值为true时才在断点处停止</li>
+</ul>
+<h4 id="返回-10"><a href="#返回-10" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>breakpointId <strong>BreakpointId</strong> 创建的断点的ID，以供进一步参考</li>
+<li>locations <strong>array Location</strong> 添加后此断点解析为的位置的列表</li>
+</ul>
+<h3 id="Debugger-setBreakpointOnFunctionCall"><a href="#Debugger-setBreakpointOnFunctionCall" class="headerlink" title="Debugger.setBreakpointOnFunctionCall"></a>Debugger.setBreakpointOnFunctionCall</h3><p>在每次调用给定函数之前设置JavaScript断点。 如果另一个函数是从与给定源相同的源创建的，则调用该函数也会触发断点<font color="red">[实验性质]</font></p>
+<h4 id="参数-17"><a href="#参数-17" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>objectId <strong>Runtime.RemoteObjectId</strong> 功能对象ID</li>
+<li>condition<font color="blue">[optional]</font> <strong>string</strong> 用作断点条件的表达式。 指定后，如果此表达式的值为true，调试器将在断点处停止</li>
+</ul>
+<h4 id="返回-11"><a href="#返回-11" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>breakpointId <strong>BreakpointId</strong> 创建的断点的ID供进一步参考</li>
+</ul>
+<h3 id="Debugger-setBreakpointsActive"><a href="#Debugger-setBreakpointsActive" class="headerlink" title="Debugger.setBreakpointsActive"></a>Debugger.setBreakpointsActive</h3><p>激活/禁用页面上的所有断点</p>
+<h4 id="参数-18"><a href="#参数-18" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>active <strong>boolean</strong> 断点活动状态的新值</li>
+</ul>
+<h3 id="Debugger-setPauseOnExceptions"><a href="#Debugger-setPauseOnExceptions" class="headerlink" title="Debugger.setPauseOnExceptions"></a>Debugger.setPauseOnExceptions</h3><p>定义异常状态的暂停。 可以设置为在所有异常，未捕获的异常或无异常时停止。 异常状态的初始暂停为无</p>
+<h4 id="参数-19"><a href="#参数-19" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>state <strong>string</strong> 在例外模式下暂停 <strong>允许值:</strong><code>none</code>, <code>uncaught</code>, <code>all</code></li>
+</ul>
+<h3 id="Debugger-setReturnValue"><a href="#Debugger-setReturnValue" class="headerlink" title="Debugger.setReturnValue"></a>Debugger.setReturnValue</h3><p>更改顶框中的返回值。 仅在返回中断位置可用。<font color="red">[实验性质]</font></p>
+<h4 id="参数-20"><a href="#参数-20" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>newValue <strong>Runtime.CallArgument</strong> 新的返回值</li>
+</ul>
+<h3 id="Debugger-setScriptSource"><a href="#Debugger-setScriptSource" class="headerlink" title="Debugger.setScriptSource"></a>Debugger.setScriptSource</h3><p>实时编辑JavaScript源</p>
+<h4 id="参数-21"><a href="#参数-21" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>scriptId <strong>Runtime.ScriptId</strong> 要编辑的脚本的ID</li>
+<li>scriptSource <strong>string</strong> 脚本的新内容</li>
+<li>dryRun<font color="blue">[optional]</font> <strong>boolean</strong> 如果为true，则更改实际上不会应用。 空运行可用于获取结果描述，而无需实际修改代码</li>
+</ul>
+<h4 id="返回-12"><a href="#返回-12" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>callFrames<font color="blue">[optional]</font> <strong>array CallFrame</strong> 停止VM时进行编辑时会出现新的堆栈跟踪</li>
+<li>stackChanged<font color="blue">[optional]</font> <strong>boolean</strong> 应用更改后是否修改了当前调用堆栈</li>
+<li>asyncStackTrace<font color="blue">[optional]</font> <strong>Runtime.StackTrace</strong> 异步堆栈跟踪（如果有）</li>
+<li>asyncStackTraceId<font color="blue">[optional]</font> <strong>Runtime.StackTraceId</strong> 异步堆栈跟踪（如果有）<font color="red">[实验性质]</font></li>
+<li>exceptionDetails<font color="blue">[optional]</font> <strong>Runtime.ExceptionDetails</strong>异常详细信息（如果有）</li>
+</ul>
+<h3 id="Debugger-setSkipAllPauses"><a href="#Debugger-setSkipAllPauses" class="headerlink" title="Debugger.setSkipAllPauses"></a>Debugger.setSkipAllPauses</h3><p>使页面不因任何暂停而中断（断点，异常，dom异常等）。</p>
+<h4 id="参数-22"><a href="#参数-22" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>skip <strong>boolean</strong> 跳过暂停状态的新值</li>
+</ul>
+<h3 id="Debugger-setVariableValue"><a href="#Debugger-setVariableValue" class="headerlink" title="Debugger.setVariableValue"></a>Debugger.setVariableValue</h3><p>更改调用框中变量的值。 不支持基于对象的作用域，必须手动对其进行更改。</p>
+<h4 id="参数-23"><a href="#参数-23" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>scopeNumber <strong>integer</strong> 范围链中列出的基于0的范围数。 仅允许使用“本地”，“关闭”和“捕获”范围类型。 其他范围可以手动操作。</li>
+<li>variableName <strong>string</strong> 变量名。</li>
+<li>newValue <strong>Runtime.CallArgument</strong> 新的变量值。</li>
+<li>callFrameId <strong>CallFrameId</strong> 包含变量的调用框架的ID。</li>
+</ul>
+<h3 id="Debugger-stepInto"><a href="#Debugger-stepInto" class="headerlink" title="Debugger.stepInto"></a>Debugger.stepInto</h3><p>进入函数调用。</p>
+<h4 id="参数-24"><a href="#参数-24" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>breakOnAsyncCall<font color="blue">[optional]</font> <strong>boolean</strong> 调试器将在执行下一个暂停之前计划的第一个异步任务时暂停。<font color="red">[实验性质]</font></li>
+</ul>
+<h3 id="Debugger-stepOut"><a href="#Debugger-stepOut" class="headerlink" title="Debugger.stepOut"></a>Debugger.stepOut</h3><p>退出函数调用。</p>
+<h3 id="Debugger-stepOver"><a href="#Debugger-stepOver" class="headerlink" title="Debugger.stepOver"></a>Debugger.stepOver</h3><p>逐步执行该语句。</p>
+<h2 id="Events"><a href="#Events" class="headerlink" title="Events"></a>Events</h2><h3 id="Debugger-breakpointResolved"><a href="#Debugger-breakpointResolved" class="headerlink" title="Debugger.breakpointResolved"></a>Debugger.breakpointResolved</h3><p>将断点解析为实际脚本和位置时触发。</p>
+<h4 id="参数-25"><a href="#参数-25" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>breakpointId <strong>BreakpointId</strong> 断点唯一标识符</li>
+<li>location <strong>Location</strong> 实际断点位置</li>
+</ul>
+<h3 id="Debugger-paused"><a href="#Debugger-paused" class="headerlink" title="Debugger.paused"></a>Debugger.paused</h3><p>当虚拟机在断点或异常或任何其他停止条件上停止时触发。</p>
+<h4 id="参数-26"><a href="#参数-26" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>callFrames <strong>array CallFrame</strong> 虚拟机停止在其上的调用堆栈</li>
+<li>reason <strong>string</strong> 暂停原因 <strong>允许值:</strong> <code>ambiguous</code>, <code>assert</code>, <code>debugCommand</code>, <code>DOM</code>, <code>EventListener</code>, <code>exception</code>, <code>instrumentation</code>, <code>OOM</code>, <code>other</code>, <code>promiseRejection</code>, <code>XHR</code></li>
+<li>data<font color="blue">[optional]</font> <strong>object</strong> 包含特定于中断的辅助属性的对象</li>
+<li>hitBreakpoints<font color="blue">[optional]</font> <strong>array [ string ]</strong> 命中断点ID </li>
+<li>asyncStackTrace<font color="blue">[optional]</font> <strong>Runtime.StackTrace</strong> 异步堆栈跟踪（如果有）。</li>
+<li>asyncStackTraceId<font color="blue">[optional]</font> <strong>Runtime.StackTraceId</strong> 异步堆栈跟踪（如果有）。<font color="red">[实验性质]</font></li>
+<li>asyncCallStackTraceId<font color="blue">[optional]</font> <strong>Runtime.StackTraceId</strong> 从不存在，将被删除。<font color="red">[实验性质]</font><font color="#FFCC80">[已淘汰]</font></li>
+</ul>
+<h3 id="Debugger-resumed"><a href="#Debugger-resumed" class="headerlink" title="Debugger.resumed"></a>Debugger.resumed</h3><p>虚拟机恢复执行时触发</p>
+<h3 id="Debugger-scriptFailedToParse"><a href="#Debugger-scriptFailedToParse" class="headerlink" title="Debugger.scriptFailedToParse"></a>Debugger.scriptFailedToParse</h3><p>当虚拟机无法解析脚本时触发</p>
+<h4 id="参数-27"><a href="#参数-27" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>scriptId <strong>Runtime.ScriptId</strong> 解析脚本的标识符</li>
+<li>url <strong>string</strong> 解析的脚本的URL或名称（如果有）</li>
+<li>startLine <strong>integer</strong> 具有给定URL的资源内脚本的行偏移量（用于脚本标签）</li>
+<li>startColumn <strong>integer</strong> 具有给定URL的资源中脚本的列偏移量</li>
+<li>endLine <strong>integer</strong> 脚本的最后一行</li>
+<li>endColumn <strong>integer</strong> 脚本最后一行的长度</li>
+<li>executionContextId <strong>Runtime.ExecutionContextId</strong> 指定脚本创建上下文</li>
+<li>hash <strong>string</strong> 脚本的内容哈希</li>
+<li>executionContextAuxData<font color="blue">[optional]</font> <strong>object</strong> 嵌入程序专用辅助数据</li>
+<li>sourceMapURL<font color="blue">[optional]</font> <strong>string</strong> 与脚本关联的源映射的URL（如果有）。</li>
+<li>hasSourceURL<font color="blue">[optional]</font> <strong>boolean</strong> 如果此脚本具有sourceURL，则为True。</li>
+<li>isModule<font color="blue">[optional]</font> <strong>boolean</strong> 如果该脚本是ES6模块，则为true。</li>
+<li>length<font color="blue">[optional]</font> <strong>integer</strong> 此脚本的长度。</li>
+<li>stackTrace<font color="blue">[optional]</font> <strong>Runtime.StackTrace</strong> 脚本解析事件触发位置的JavaScript顶部堆栈框架（如果有）。<font color="red">[实验性质]</font></li>
+</ul>
+<h3 id="Debugger-scriptParsed"><a href="#Debugger-scriptParsed" class="headerlink" title="Debugger.scriptParsed"></a>Debugger.scriptParsed</h3><p>虚拟机解析脚本时触发。 启用调试器后，也会针对所有已知和未收集的脚本触发此事件。</p>
+<h4 id="参数-28"><a href="#参数-28" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>scriptId <strong>Runtime.ScriptId</strong> 解析脚本的标识符</li>
+<li>url <strong>string</strong> 解析的脚本的URL或名称（如果有）</li>
+<li>startLine <strong>integer</strong> 具有给定URL的资源内脚本的行偏移量（用于脚本标签）</li>
+<li>startColumn <strong>integer</strong> 具有给定URL的资源中脚本的列偏移量</li>
+<li>endLine <strong>integer</strong> 脚本的最后一行</li>
+<li>endColumn <strong>integer</strong> 脚本最后一行的长度</li>
+<li>executionContextId <strong>Runtime.ExecutionContextId</strong> 指定脚本创建上下文</li>
+<li>hash <strong>string</strong> 脚本的内容哈希</li>
+<li>executionContextAuxData<font color="blue">[optional]</font> <strong>object</strong> 嵌入程序专用辅助数据</li>
+<li>isLiveEdit<font color="blue">[optional]</font> <strong>boolean</strong> 是的，如果此脚本是通过实时编辑操作生成的 <font color="red">[实验性质]</font></li>
+<li>sourceMapURL<font color="blue">[optional]</font> <strong>string</strong> 与脚本关联的源映射的URL（如果有）。</li>
+<li>hasSourceURL<font color="blue">[optional]</font> <strong>boolean</strong> 如果此脚本具有sourceURL，则为True。</li>
+<li>isModule<font color="blue">[optional]</font> <strong>boolean</strong> 如果该脚本是ES6模块，则为true。</li>
+<li>length<font color="blue">[optional]</font> <strong>integer</strong> 此脚本的长度。</li>
+<li>stackTrace<font color="blue">[optional]</font> <strong>Runtime.StackTrace</strong> 脚本解析事件触发位置的JavaScript顶部堆栈框架（如果有）<font color="red">[实验性质]</font></li>
+</ul>
+<h2 id="Types"><a href="#Types" class="headerlink" title="Types"></a>Types</h2><h3 id="BreakpointId"><a href="#BreakpointId" class="headerlink" title="BreakpointId"></a>BreakpointId</h3><p>断点标识符</p>
+<p>Type: <strong>string</strong></p>
+<h3 id="CallFrameId"><a href="#CallFrameId" class="headerlink" title="CallFrameId"></a>CallFrameId</h3><p>呼叫帧标识符</p>
+<p>Type: <strong>string</strong></p>
+<h3 id="Location"><a href="#Location" class="headerlink" title="Location"></a>Location</h3><p>在源代码中的位置</p>
+<p>Type: <strong>Object</strong></p>
+<h4 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h4><ul>
+<li>scriptId <strong>Runtime.ScriptId</strong> 在Debugger.scriptParsed中报告的脚本标识符。</li>
+<li>lineNumber <strong>integer</strong> 脚本中的行号（从0开始）</li>
+<li>columnNumber<font color="blue">[optional]</font> <strong>integer</strong> 脚本中的列号（从0开始）</li>
+</ul>
+<h3 id="ScriptPosition"><a href="#ScriptPosition" class="headerlink" title="ScriptPosition"></a>ScriptPosition</h3><p>源代码中的位置<font color="red">[实验性质]</font></p>
+<p>Type: <strong>Object</strong></p>
+<h4 id="数据结构-1"><a href="#数据结构-1" class="headerlink" title="数据结构"></a>数据结构</h4><ul>
+<li>lineNumber <strong>integer</strong></li>
+<li>columnNumber <strong>integer</strong></li>
+</ul>
+<h3 id="CallFrame"><a href="#CallFrame" class="headerlink" title="CallFrame"></a>CallFrame</h3><p>JavaScript调用框架。 调用帧数组构成调用堆栈</p>
+<p>Type: <strong>Object</strong></p>
+<h4 id="数据结构-2"><a href="#数据结构-2" class="headerlink" title="数据结构"></a>数据结构</h4><ul>
+<li>callFrameId <strong>CallFrameId</strong>  呼叫帧标识符。 该标识符仅在虚拟机暂停时有效</li>
+<li>functionName <strong>string</strong> 在此调用框架上调用的JavaScript函数的名称</li>
+<li>functionLocation<font color="blue">[optional]</font> <strong>Location</strong> 源代码中的位置</li>
+<li>location <strong>Location</strong> 源代码中的位置</li>
+<li>url <strong>string</strong> JavaScript脚本名称或网址</li>
+<li>scopeChain <strong>array Scope</strong> 此调用框架的范围链</li>
+<li>this <strong>Runtime.RemoteObject</strong> 此调用框架的此对象</li>
+<li>returnValue <strong>Runtime.RemoteObject</strong> 如果函数在返回点，则返回值</li>
+</ul>
+<h3 id="Scope"><a href="#Scope" class="headerlink" title="Scope"></a>Scope</h3><p>范围说明</p>
+<p>Type: <strong>Object</strong></p>
+<h4 id="数据结构-3"><a href="#数据结构-3" class="headerlink" title="数据结构"></a>数据结构</h4><ul>
+<li>type <strong>string</strong> 范围说明 <strong>允许值:</strong> <code>global</code>, <code>local</code>, <code>with</code>, <code>closure</code>, <code>catch</code>, <code>block</code>, <code>script</code>, <code>eval</code>, <code>module</code></li>
+<li>object <strong>Runtime.RemoteObject</strong> 表示范围的对象。 对于全局和范围，它表示实际对象； 对于其余的范围，它是人为的瞬时对象，将范围变量枚举为其属性。</li>
+<li>name<font color="blue">[optional]</font> <strong>string</strong></li>
+<li>startLocation<font color="blue">[optional]</font> <strong>Location</strong> 源代码中范围开始的位置</li>
+<li>endLocation<font color="blue">[optional]</font> <strong>Location</strong> 源代码中作用域结束的位置</li>
+</ul>
+<h3 id="SearchMatch"><a href="#SearchMatch" class="headerlink" title="SearchMatch"></a>SearchMatch</h3><p>搜索资源匹配项</p>
+<p>Type: <strong>Object</strong></p>
+<h4 id="数据结构-4"><a href="#数据结构-4" class="headerlink" title="数据结构"></a>数据结构</h4><ul>
+<li>lineNumber <strong>number</strong> 资源内容中的行号</li>
+<li>lineContent <strong>string</strong> 符合内容的行</li>
+</ul>
+<h3 id="BreakLocation"><a href="#BreakLocation" class="headerlink" title="BreakLocation"></a>BreakLocation</h3><p>Type: <strong>Object</strong></p>
+<h4 id="数据结构-5"><a href="#数据结构-5" class="headerlink" title="数据结构"></a>数据结构</h4><ul>
+<li>scriptId <strong>Runtime.ScriptId</strong> 在Debugger.scriptParsed中报告的脚本标识符</li>
+<li>lineNumber <strong>number</strong> 脚本中的行号（从0开始）</li>
+<li>columnNumber<font color="blue">[optional]</font> <strong>string</strong> 脚本中的列号（从0开始）</li>
+<li>type<font color="blue">[optional]</font> <strong>string</strong> 范围说明 <strong>允许值:</strong> <code>debuggerStatement</code>, <code>call</code>, <code>return</code></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/10/10/devtools-browser/" rel="next" title="Chrome Devtools Browser">
+                  <i class="fa fa-chevron-left"></i> Chrome Devtools Browser
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/10/10/devtools-dom/" rel="prev" title="Chrome Devtools DOM">
+                  Chrome Devtools DOM <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Methods"><span class="nav-number">1.</span> <span class="nav-text">Methods</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-continueToLocation"><span class="nav-number">1.1.</span> <span class="nav-text">Debugger.continueToLocation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数"><span class="nav-number">1.1.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-disable"><span class="nav-number">1.2.</span> <span class="nav-text">Debugger.disable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-enable"><span class="nav-number">1.3.</span> <span class="nav-text">Debugger.enable</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回"><span class="nav-number">1.3.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-evaluateOnCallFrame"><span class="nav-number">1.4.</span> <span class="nav-text">Debugger.evaluateOnCallFrame</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-2"><span class="nav-number">1.4.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-1"><span class="nav-number">1.4.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-getPossibleBreakpoints"><span class="nav-number">1.5.</span> <span class="nav-text">Debugger.getPossibleBreakpoints</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-3"><span class="nav-number">1.5.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-2"><span class="nav-number">1.5.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-getScriptSource"><span class="nav-number">1.6.</span> <span class="nav-text">Debugger.getScriptSource</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-4"><span class="nav-number">1.6.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-3"><span class="nav-number">1.6.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-getWasmBytecode"><span class="nav-number">1.7.</span> <span class="nav-text">Debugger.getWasmBytecode</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-5"><span class="nav-number">1.7.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-4"><span class="nav-number">1.7.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-getStackTrace"><span class="nav-number">1.8.</span> <span class="nav-text">Debugger.getStackTrace</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-6"><span class="nav-number">1.8.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-5"><span class="nav-number">1.8.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-pause"><span class="nav-number">1.9.</span> <span class="nav-text">Debugger.pause</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-pauseOnAsyncCall"><span class="nav-number">1.10.</span> <span class="nav-text">Debugger.pauseOnAsyncCall</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-7"><span class="nav-number">1.10.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-removeBreakpoint"><span class="nav-number">1.11.</span> <span class="nav-text">Debugger.removeBreakpoint</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-8"><span class="nav-number">1.11.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-restartFrame"><span class="nav-number">1.12.</span> <span class="nav-text">Debugger.restartFrame</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-9"><span class="nav-number">1.12.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-6"><span class="nav-number">1.12.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-resume"><span class="nav-number">1.13.</span> <span class="nav-text">Debugger.resume</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-searchInContent"><span class="nav-number">1.14.</span> <span class="nav-text">Debugger.searchInContent</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-10"><span class="nav-number">1.14.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-7"><span class="nav-number">1.14.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-setAsyncCallStackDepth"><span class="nav-number">1.15.</span> <span class="nav-text">Debugger.setAsyncCallStackDepth</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-11"><span class="nav-number">1.15.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-setBlackboxPatterns"><span class="nav-number">1.16.</span> <span class="nav-text">Debugger.setBlackboxPatterns</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-12"><span class="nav-number">1.16.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-setBlackboxedRanges"><span class="nav-number">1.17.</span> <span class="nav-text">Debugger.setBlackboxedRanges</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-13"><span class="nav-number">1.17.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-setBreakpoint"><span class="nav-number">1.18.</span> <span class="nav-text">Debugger.setBreakpoint</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-14"><span class="nav-number">1.18.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-8"><span class="nav-number">1.18.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-setInstrumentationBreakpoint"><span class="nav-number">1.19.</span> <span class="nav-text">Debugger.setInstrumentationBreakpoint</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-15"><span class="nav-number">1.19.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-9"><span class="nav-number">1.19.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-setBreakpointByUrl"><span class="nav-number">1.20.</span> <span class="nav-text">Debugger.setBreakpointByUrl</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-16"><span class="nav-number">1.20.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-10"><span class="nav-number">1.20.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-setBreakpointOnFunctionCall"><span class="nav-number">1.21.</span> <span class="nav-text">Debugger.setBreakpointOnFunctionCall</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-17"><span class="nav-number">1.21.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-11"><span class="nav-number">1.21.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-setBreakpointsActive"><span class="nav-number">1.22.</span> <span class="nav-text">Debugger.setBreakpointsActive</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-18"><span class="nav-number">1.22.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-setPauseOnExceptions"><span class="nav-number">1.23.</span> <span class="nav-text">Debugger.setPauseOnExceptions</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-19"><span class="nav-number">1.23.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-setReturnValue"><span class="nav-number">1.24.</span> <span class="nav-text">Debugger.setReturnValue</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-20"><span class="nav-number">1.24.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-setScriptSource"><span class="nav-number">1.25.</span> <span class="nav-text">Debugger.setScriptSource</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-21"><span class="nav-number">1.25.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-12"><span class="nav-number">1.25.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-setSkipAllPauses"><span class="nav-number">1.26.</span> <span class="nav-text">Debugger.setSkipAllPauses</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-22"><span class="nav-number">1.26.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-setVariableValue"><span class="nav-number">1.27.</span> <span class="nav-text">Debugger.setVariableValue</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-23"><span class="nav-number">1.27.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-stepInto"><span class="nav-number">1.28.</span> <span class="nav-text">Debugger.stepInto</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-24"><span class="nav-number">1.28.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-stepOut"><span class="nav-number">1.29.</span> <span class="nav-text">Debugger.stepOut</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-stepOver"><span class="nav-number">1.30.</span> <span class="nav-text">Debugger.stepOver</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Events"><span class="nav-number">2.</span> <span class="nav-text">Events</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-breakpointResolved"><span class="nav-number">2.1.</span> <span class="nav-text">Debugger.breakpointResolved</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-25"><span class="nav-number">2.1.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-paused"><span class="nav-number">2.2.</span> <span class="nav-text">Debugger.paused</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-26"><span class="nav-number">2.2.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-resumed"><span class="nav-number">2.3.</span> <span class="nav-text">Debugger.resumed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-scriptFailedToParse"><span class="nav-number">2.4.</span> <span class="nav-text">Debugger.scriptFailedToParse</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-27"><span class="nav-number">2.4.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugger-scriptParsed"><span class="nav-number">2.5.</span> <span class="nav-text">Debugger.scriptParsed</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-28"><span class="nav-number">2.5.1.</span> <span class="nav-text">参数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Types"><span class="nav-number">3.</span> <span class="nav-text">Types</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BreakpointId"><span class="nav-number">3.1.</span> <span class="nav-text">BreakpointId</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CallFrameId"><span class="nav-number">3.2.</span> <span class="nav-text">CallFrameId</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Location"><span class="nav-number">3.3.</span> <span class="nav-text">Location</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据结构"><span class="nav-number">3.3.1.</span> <span class="nav-text">数据结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ScriptPosition"><span class="nav-number">3.4.</span> <span class="nav-text">ScriptPosition</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据结构-1"><span class="nav-number">3.4.1.</span> <span class="nav-text">数据结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CallFrame"><span class="nav-number">3.5.</span> <span class="nav-text">CallFrame</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据结构-2"><span class="nav-number">3.5.1.</span> <span class="nav-text">数据结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scope"><span class="nav-number">3.6.</span> <span class="nav-text">Scope</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据结构-3"><span class="nav-number">3.6.1.</span> <span class="nav-text">数据结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SearchMatch"><span class="nav-number">3.7.</span> <span class="nav-text">SearchMatch</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据结构-4"><span class="nav-number">3.7.1.</span> <span class="nav-text">数据结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BreakLocation"><span class="nav-number">3.8.</span> <span class="nav-text">BreakLocation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据结构-5"><span class="nav-number">3.8.1.</span> <span class="nav-text">数据结构</span></a></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">mousemin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mousemin</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

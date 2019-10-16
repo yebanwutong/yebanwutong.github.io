@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=7.4.0">
+  <link rel="mask-icon" href="/images/favicon.ico?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Mouse" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="这是当初去面试百度PHP实习生面试官提出的问题 因为完全不知道就查了下资料问题：用户级线程和内核级线程的区别下面是我查到的资料:这个事情，还真不是一句话就能回答的，因为涉及到Linux和编译器的版本关于线程的概念不多说了，内核级和用户级线程的定义网上也有，简单的说：内核级就是操作系统内核支持，用户级就是函数库实现（也就是说，不管你操作系统是不是支持线程的，我都可以在你上面用多线程编程）。好了，那么">
+<meta name="keywords" content="面试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用户级线程和内核级线程的区别">
+<meta property="og:url" content="https://mousemin.github.io/2018/10/10/用户级线程和内核级线程的区别/index.html">
+<meta property="og:site_name" content="Mouse">
+<meta property="og:description" content="这是当初去面试百度PHP实习生面试官提出的问题 因为完全不知道就查了下资料问题：用户级线程和内核级线程的区别下面是我查到的资料:这个事情，还真不是一句话就能回答的，因为涉及到Linux和编译器的版本关于线程的概念不多说了，内核级和用户级线程的定义网上也有，简单的说：内核级就是操作系统内核支持，用户级就是函数库实现（也就是说，不管你操作系统是不是支持线程的，我都可以在你上面用多线程编程）。好了，那么">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-10T09:49:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用户级线程和内核级线程的区别">
+<meta name="twitter:description" content="这是当初去面试百度PHP实习生面试官提出的问题 因为完全不知道就查了下资料问题：用户级线程和内核级线程的区别下面是我查到的资料:这个事情，还真不是一句话就能回答的，因为涉及到Linux和编译器的版本关于线程的概念不多说了，内核级和用户级线程的定义网上也有，简单的说：内核级就是操作系统内核支持，用户级就是函数库实现（也就是说，不管你操作系统是不是支持线程的，我都可以在你上面用多线程编程）。好了，那么">
+  <link rel="canonical" href="https://mousemin.github.io/2018/10/10/用户级线程和内核级线程的区别/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>用户级线程和内核级线程的区别 | Mouse</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mouse</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://mousemin.github.io/2018/10/10/用户级线程和内核级线程的区别/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mousemin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mouse">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">用户级线程和内核级线程的区别
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-10 22:25:00" itemprop="dateCreated datePublished" datetime="2018-10-10T22:25:00+08:00">2018-10-10</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-10 17:49:19" itemprop="dateModified" datetime="2019-10-10T17:49:19+08:00">2019-10-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="这是当初去面试百度PHP实习生面试官提出的问题-因为完全不知道就查了下资料"><a href="#这是当初去面试百度PHP实习生面试官提出的问题-因为完全不知道就查了下资料" class="headerlink" title="这是当初去面试百度PHP实习生面试官提出的问题 因为完全不知道就查了下资料"></a>这是当初去面试百度PHP实习生面试官提出的问题 因为完全不知道就查了下资料</h4><p><strong>问题</strong>：用户级线程和内核级线程的区别<br>下面是我查到的资料:</p><hr><p>这个事情，还真不是一句话就能回答的，因为涉及到Linux和编译器的版本关于线程的概念不多说了，内核级和用户级线程的定义网上也有，简单的说：内核级就是操作系统内核支持，用户级就是函数库实现（也就是说，不管你操作系统是不是支持线程的，我都可以在你上面用多线程编程）。好了，那么，我们首先明白一件事：不管Linux还是什么OS，都可以多线程编程的，怎么多线程编程呢？程序员要创建一个线程，当然需要使用xxx函数，这个函数如果是操作系统本身就提供的系统函数，当然没问题，操作系统创建的线程，自然是内核级的了。如果操作系统没有提供“创建线程”的函数（比如Linux 2.4及以前的版本，因为Linux刚诞生那时候，还没有“线程”的概念，能处理多“进程”就不错了），当然你程序员也没办法在操作系统上创建线程。所以，Linux 2.4内核中不知道什么是“线程”，只有一个“task_struct”的数据结构，就是进程。那么，后来随着科学技术的发展，大家提出线程的概念，而且，线程有时候的确是个好东西，于是，我们希望Linux能加入“多线程”编程。要修改一个操作系统，那是很复杂的事情，特别是当操作系统越来越庞大的时候。怎么才能让Linux支持“多线程”呢？首先，最简单的，就是不去动操作系统的“内核”，而是写一个函数库来“模拟”线程。也就是说，我用C写一个函数，比如 create_thread，这个函数最终在Linux的内核里还是去调用了创建“进程”的函数去创建了一个进程（因为OS没变嘛，没有线程这个东西）。 如果有人要多线程编程，那么你就调用 这个create_thread 去创建线程吧，好了，这个线程，就是用库函数创建的线程，就是所谓的“用户级线程”了。等等，这是神马意思？赤裸裸的欺骗？也不是。为什么不是？因为别人给你提供了这个线程函数，你创建了“线程”，那么，你的线程（虽然本质上还是进程）就有了“线程”的一些“特征”，比如可以共享变量啊什么的，咦？那怎么做到的？当然有一套机制，反正人家给你做好了，你用就行了。这种欺骗自然是不“完美”的，有线程的“一些”特征，但不能完全符合理论上的“线程”的概念(POSIX的要求），比如，这种多线程不能被分配到多核上，用户创建的N个线程，对于着内核里面其实就一个“进程”，导致调度啊，管理啊麻烦…..为什么要采用这种“模拟”的方式呢？改内核不是一天两天的事情，先将就用着吧。内核慢慢来改。怎么干改内核这个艰苦卓越的工作？Linux是开源、免费的，谁愿意来干这个活？有两家公司参与了对LinuxThreads的改进（向他们致敬）：IBM启动的NGTP(Next Generation POSIX Threads)项目，以及红帽Redhat公司的NPTL（Native POSIX Thread Library），IBM那个项目，在2003年因为种种原因放弃了，大家都转到NPTL这个项目来了。最终，当然是成功了，在Linux 2.6的内核版本中，这个NPTL项目怎么做的呢？并不是在Linux内核中加了一个“线程”，仍然和原来一样，进程（其实，进程线程就是个概念，对于计算机，只要能高效的实现这个概念就行，程序员能用就OK，管它究竟怎么实现的），不过，用的clone实现的轻量级进程，内核又增加了若干机制来保证线程的表现和POSIX相同，最关键的一点，用户调用pthread库创建的一个线程，会在内核创建一个“线程”，这就是所谓的1：1模型。所以，Linux下，是有“内核级”线程的，网上很多说Linux是用户级线程，都是不完整的，说的Linux很早以前的版本（现在Linux已经是4.X的版本了）。还有个 pthread 的问题，pthread是个线程函数库，他提供了一些函数，让程序员可以用它来创建，使用线程。那么问题是，这个函数库里面的函数，比如 pthread_create 创建线程的函数，他是怎么实现的呢？他如果是用以前的方法，那程序员用它来创建的线程，还是“用户级”线程；如果它使用了NPTL方式创建线程，那么，它创建的线程，就是“内核级”线程。OK，结论，如果你  1：使用2.6的内核的系统平台，2：你的gcc支持NPTL （现在一般都支持），那么你编译出来的多线程程序，就是“内核级”线程了。所以，现在回答问题，只要你不是很古董级的电脑，Linux下用pthread创建的线程是“内核级线程”最后，这NPTL也并不是完美的，还有一些小问题，像有一些商业操作系统，可以实现混合模型，如1:1，N:M等（就是内核线程和用户线程的对应关系），这就强大了，Linux仍有改进的空间</p><a id="more"></a>
+
+
+<hr>
+<p>进程，轻量级进程，内核线程，用户线程的区别关系在现代操作系统中，进程支持多线程。进程是资源管理的最小单元；而线程是程序执行的最小单元。一个进程的组成实体可以分为两大部分：线程集合资源集。进程中的线程是动态的对象；代表了进程指令的执行。资源，包括地址空间、打开的文件、用户信息等等，由进程内的线程共享。线程有自己的私有数据：程序计数器，栈空间以及寄存器。Why Thread?（传统单线程进程的缺点）1． 现实中有很多需要并发处理的任务，如数据库的服务器端、网络服务器、大容量计算等。2． 传统的UNIX进程是单线程的，单线程意味着程序必须是顺序执行，不能并发；既在一个时刻只能运行在一个处理器上，因此不能充分利用多处理器框架的计算机。 3． 如果采用多进程的方法，则有如下问题：<br>a. fork一个子进程的消耗是很大的，fork是一个昂贵的系统调用，即使使用现代的写时复制(copy-on-write)技术。<br>b. 各个进程拥有自己独立的地址空间，进程间的协作需要复杂的IPC技术，如消息传递和共享内存等。多线程的优缺点多线程的优点和缺点实际上是对立统一的。支持多线程的程序(进程)可以取得真正的并行(parallelism)，且由于共享进程的代码和全局数据，故线程间的通信是方便的。它的缺点也是由于线程共享进程的地址空间，因此可能会导致竞争，因此对某一块有多个线程要访问的数据需要一些同步技术。三种线程——内核线程、轻量级进程、用户线程内核线程内核线程就是内核的分身，一个分身可以处理一件特定事情。这在处理异步事件如异步IO时特别有用。内核线程的使用是廉价的，唯一使用的资源就是内核栈和上下文切换时保存寄存器的空间。支持多线程的内核叫做多线程内核(Multi-Threads kernel )。轻量级进程[*]轻量级线程(LWP)是一种由内核支持的用户线程。它是基于内核线程的高级抽象，因此只有先支持内核线程，才能有LWP。每一个进程有一个或多个LWPs，每个LWP由一个内核线程支持。这种模型实际上就是恐龙书上所提到的一对一线程模型。在这种实现的操作系统中，LWP就是用户线程。由于每个LWP都与一个特定的内核线程关联，因此每个LWP都是一个独立的线程调度单元。即使有一个LWP在系统调用中阻塞，也不会影响整个进程的执行。轻量级进程具有局限性。首先，大多数LWP的操作，如建立、析构以及同步，都需要进行系统调用。系统调用的代价相对较高：需要在user mode和kernel mode中切换。其次，每个LWP都需要有一个内核线程支持，因此LWP要消耗内核资源（内核线程的栈空间）。因此一个系统不能支持大量的LWP。注：1 LWP的术语是借自于SVR4/MP和Solaris 2.x。2 有些系统将LWP称为虚拟处理器。3 将之称为轻量级进程的原因可能是：在内核线程的支持下，LWP是独立的调度单元，就像普通的进程一样。所以LWP的最大特点还是每个LWP都有一个内核线程支持。用户线程LWP虽然本质上属于用户线程，但LWP线程库是建立在内核之上的，LWP的许多操作都要进行系统调用，因此效率不高。而这里的用户线程指的是完全建立在用户空间的线程库，用户线程的建立，同步，销毁，调度完全在用户空间完成，不需要内核的帮助。因此这种线程的操作是极其快速的且低消耗的。上图是最初的一个用户线程模型，从中可以看出，进程中包含线程，用户线程在用户空间中实现，内核并没有直接对用户线程进行调度，内核的调度对象和传统进程一样，还是进程本身，内核并不知道用户线程的存在。用户线程之间的调度由在用户空间实现的线程库实现。这种模型对应着恐龙书中提到的多对一线程模型，其缺点是一个用户线程如果阻塞在系统调用中，则整个进程都将会阻塞。加强版的用户线程——用户线程+LWP这种模型对应着恐龙书中多对多模型。用户线程库还是完全建立在用户空间中，因此用户线程的操作还是很廉价，因此可以建立任意多需要的用户线程。操作系统提供了LWP作为用户线程和内核线程之间的桥梁。LWP还是和前面提到的一样，具有内核线程支持，是内核的调度单元，并且用户线程的系统调用要通过LWP，因此进程中某个用户线程的阻塞不会影响整个进程的执行。用户线程库将建立的用户线程关联到LWP上，LWP与用户线程的数量不一定一致。当内核调度到某个LWP上时，此时与该LWP关联的用户线程就被执行。<br>小结：很多文献中都认为轻量级进程就是线程，实际上这种说法并不完全正确，从前面的分析中可以看到，只有在用户线程完全由轻量级进程构成时，才可以说轻量级进程就是线程</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/面试/" rel="tag"># 面试</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2018/10/10/Linux主机名/" rel="next" title="Linux主机名">
+                  <i class="fa fa-chevron-left"></i> Linux主机名
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2018/10/10/学习技能/" rel="prev" title="学习技能">
+                  学习技能 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#这是当初去面试百度PHP实习生面试官提出的问题-因为完全不知道就查了下资料"><span class="nav-number">1.</span> <span class="nav-text">这是当初去面试百度PHP实习生面试官提出的问题 因为完全不知道就查了下资料</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">mousemin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mousemin</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

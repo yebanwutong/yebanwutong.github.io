@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=7.4.0">
+  <link rel="mask-icon" href="/images/favicon.ico?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Mouse" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="常被误解的Connection首部HTTP允许在客户端和源端服务器之间存在一串HTTP中间实体（代理、高速缓存等）。可以从客户端开始，逐跳的将HTTP报文经过这些中间设备，转发到源端服务器上去（或者反向代理）在某些情况下， 两个相邻的HTTP应用程序会为他们共享的连接应用一组选项。HTTP报文中Connection字段有一个由逗号分隔的连接标签列表，这些标签为连接指定了一些不会传播到其他连接中的选">
+<meta name="keywords" content="Http">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP连接处理（一）">
+<meta property="og:url" content="https://mousemin.github.io/2019/05/06/HTTP连接处理（一）/index.html">
+<meta property="og:site_name" content="Mouse">
+<meta property="og:description" content="常被误解的Connection首部HTTP允许在客户端和源端服务器之间存在一串HTTP中间实体（代理、高速缓存等）。可以从客户端开始，逐跳的将HTTP报文经过这些中间设备，转发到源端服务器上去（或者反向代理）在某些情况下， 两个相邻的HTTP应用程序会为他们共享的连接应用一组选项。HTTP报文中Connection字段有一个由逗号分隔的连接标签列表，这些标签为连接指定了一些不会传播到其他连接中的选">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://blog.zhuyeqingbook.cn/wp-content/uploads/2019/05/Http%E4%B8%B2%E8%A1%8C%E8%BF%9E%E6%8E%A5.png">
+<meta property="og:updated_time" content="2019-10-10T09:49:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTTP连接处理（一）">
+<meta name="twitter:description" content="常被误解的Connection首部HTTP允许在客户端和源端服务器之间存在一串HTTP中间实体（代理、高速缓存等）。可以从客户端开始，逐跳的将HTTP报文经过这些中间设备，转发到源端服务器上去（或者反向代理）在某些情况下， 两个相邻的HTTP应用程序会为他们共享的连接应用一组选项。HTTP报文中Connection字段有一个由逗号分隔的连接标签列表，这些标签为连接指定了一些不会传播到其他连接中的选">
+<meta name="twitter:image" content="https://blog.zhuyeqingbook.cn/wp-content/uploads/2019/05/Http%E4%B8%B2%E8%A1%8C%E8%BF%9E%E6%8E%A5.png">
+  <link rel="canonical" href="https://mousemin.github.io/2019/05/06/HTTP连接处理（一）/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>HTTP连接处理（一） | Mouse</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mouse</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://mousemin.github.io/2019/05/06/HTTP连接处理（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mousemin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mouse">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">HTTP连接处理（一）
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-06 23:28:00" itemprop="dateCreated datePublished" datetime="2019-05-06T23:28:00+08:00">2019-05-06</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-10 17:49:19" itemprop="dateModified" datetime="2019-10-10T17:49:19+08:00">2019-10-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Tcp-Ip/" itemprop="url" rel="index"><span itemprop="name">Tcp/Ip</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="常被误解的Connection首部"><a href="#常被误解的Connection首部" class="headerlink" title="常被误解的Connection首部"></a>常被误解的Connection首部</h2><p>HTTP允许在客户端和源端服务器之间存在一串HTTP中间实体（代理、高速缓存等）。可以从客户端开始，逐跳的将HTTP报文经过这些中间设备，转发到源端服务器上去（或者反向代理）</p><p>在某些情况下， 两个相邻的HTTP应用程序会为他们共享的连接应用一组选项。HTTP报文中<code>Connection</code>字段有一个由逗号分隔的<code>连接标签</code>列表，这些标签为连接指定了一些不会传播到其他连接中的选项。比如，可以用<code>Connection: close</code>来说明发送完报文之后必须关闭连接。</p><a id="more"></a>
+
+<p><code>Connection</code>首部可以承载<code>三种</code>不同类型的标签，因此有时会令人费解:</p>
+<ul>
+<li>HTTP首部字段名，列出了只与此连接有关的首部</li>
+<li>任意标签值，用于描述此连接的非标准选项</li>
+<li>值<code>close</code>， 说明操作完成之后关闭这条持久连接</li>
+</ul>
+<p>如果连接标签中包含一个HTTP首部字段的名称, 那么这个首部字段就包含了与一些连接相关的信息，不能将其转发出去。在将报文转发出去之前，必须删除<code>Connection</code>首部列出的所有首部字段。</p>
+<p><strong>注意</strong> 代理会转化<code>Connection</code>首部，这将会造成一些其他问题</p>
+<h2 id="串行事务处理时延"><a href="#串行事务处理时延" class="headerlink" title="串行事务处理时延"></a>串行事务处理时延</h2><p>如果对连接只是做简单的管理，TCP的性能时延可能会叠加起来。比如，假设有一个包含了3个嵌入图片的WEB页面，浏览器需要发起4给HTTP事务来显示此页面（一个用于HTTP页面，三个用于图片的加载）。如果每个事务都需要（串行地建立）一条连接， 那么连接时延和慢启动时延就会叠加起来</p>
+<p><img src="https://blog.zhuyeqingbook.cn/wp-content/uploads/2019/05/Http%E4%B8%B2%E8%A1%8C%E8%BF%9E%E6%8E%A5.png" alt></p>
+<p>除了串行加载引入的实际时延之外，加载一副图片，页面上其他地方都没有动静也会让你觉得速度很慢。</p>
+<p>串行加载的另一个缺点是，有些浏览器在对象加载完毕之前无法获知对象的尺寸，而且他们可能需要对象的尺寸信息来决定对象放在屏幕什么位置上，所以在加载足够多的对象之前，无法在屏幕上显示任何内容。在这种情况下，可能浏览器串行加载对象的进度正常，但用户面对的却是一个空白的屏幕，对加载的进度一无所知。</p>
+<h3 id="提交HTTP连接性能的方法"><a href="#提交HTTP连接性能的方法" class="headerlink" title="提交HTTP连接性能的方法"></a>提交HTTP连接性能的方法</h3><ul>
+<li><p>并行连接<br>通过多条TCP连接发起并发的HTTP请求</p>
+</li>
+<li><p>持久连接<br>重用TCP连接，以消除连接及关闭延迟</p>
+</li>
+<li><p>管道化连接<br>通过共享TCP连接发起并发HTTP请求</p>
+</li>
+<li><p>复用的连接<br>交替连接请求和响应报文（实验阶段）</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Http/" rel="tag"># Http</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/05/05/常见的HTTP状态码/" rel="next" title="常见的HTTP状态码">
+                  <i class="fa fa-chevron-left"></i> 常见的HTTP状态码
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/05/28/laravel学习-容器Container/" rel="prev" title="laravel学习-容器Container">
+                  laravel学习-容器Container <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#常被误解的Connection首部"><span class="nav-number">1.</span> <span class="nav-text">常被误解的Connection首部</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#串行事务处理时延"><span class="nav-number">2.</span> <span class="nav-text">串行事务处理时延</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#提交HTTP连接性能的方法"><span class="nav-number">2.1.</span> <span class="nav-text">提交HTTP连接性能的方法</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">mousemin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mousemin</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

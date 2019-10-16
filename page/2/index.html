@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=7.4.0">
+  <link rel="mask-icon" href="/images/favicon.ico?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Mouse" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Mouse">
+<meta property="og:url" content="https://mousemin.github.io/page/2/index.html">
+<meta property="og:site_name" content="Mouse">
+<meta property="og:locale" content="zh-CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mouse">
+  <link rel="canonical" href="https://mousemin.github.io/page/2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: true,
+    isPost: false,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Mouse</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mouse</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+  <div id="posts" class="posts-expand">
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://mousemin.github.io/2019/06/29/QString类常用函数/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mousemin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mouse">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/06/29/QString类常用函数/" class="post-title-link" itemprop="url">QString类常用函数</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-29 14:29:00" itemprop="dateCreated datePublished" datetime="2019-06-29T14:29:00+08:00">2019-06-29</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-10 17:49:19" itemprop="dateModified" datetime="2019-10-10T17:49:19+08:00">2019-10-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>QString类提供了一个Unicode文本和经典的C以零结尾的字符数组的抽象。</p><ol>
+<li><p>QString::QString()<br>构造一个零字符串。这是一个不被分配任何东西的字符串，也就是说长度和数据指针都为0。</p>
+</li>
+<li><p>bool QString::isNull() const<br>如果字符串为零，返回真。零字符串总是空的。</p>
+</li>
+</ol>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2019/06/29/QString类常用函数/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://mousemin.github.io/2019/06/29/QT构建release的exe文件后自动添加依赖库/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mousemin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mouse">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/06/29/QT构建release的exe文件后自动添加依赖库/" class="post-title-link" itemprop="url">QT构建release的exe文件后自动添加依赖库</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-29 14:14:00" itemprop="dateCreated datePublished" datetime="2019-06-29T14:14:00+08:00">2019-06-29</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-10 17:49:19" itemprop="dateModified" datetime="2019-10-10T17:49:19+08:00">2019-10-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="拷贝构建的运行的文件"><a href="#拷贝构建的运行的文件" class="headerlink" title="拷贝构建的运行的文件"></a>拷贝构建的运行的文件</h2><p>将构建的exe文件复制到一个新建立的空白文件夹内。</p><h2 id="运行终端"><a href="#运行终端" class="headerlink" title="运行终端"></a>运行终端</h2><p>QT版本：5.3.2 编译器为MinGW</p><p><img src="https://blog.zhuyeqingbook.cn/wp-content/uploads/2019/06/7VRXZ_LKM_QQNSEQIX2T4BB-252x300.png" alt></p><p>在终端中输入程序切换目录，将目录切换为你新建的文件夹</p><h2 id="运行程序自动添加依赖库"><a href="#运行程序自动添加依赖库" class="headerlink" title="运行程序自动添加依赖库"></a>运行程序自动添加依赖库</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">windeployqt release.exe</span><br></pre></td></tr></table></figure><h2 id="添加漏掉的库文件"><a href="#添加漏掉的库文件" class="headerlink" title="添加漏掉的库文件"></a>添加漏掉的库文件</h2><p>使用windeployqt.exe工具进行自动添加库文件时，有时并不能将所有的库文件进行添加，有些时候还是需要自己进行手动添加。例如，使用<code>ssl</code>库就需要自己将<code>libeay32.dll</code>和<code>ssleay32.dll</code>添加到文件夹中.</p>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2019/06/29/QT构建release的exe文件后自动添加依赖库/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://mousemin.github.io/2019/06/29/innosetup打包部署exe文件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mousemin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mouse">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/06/29/innosetup打包部署exe文件/" class="post-title-link" itemprop="url">innosetup打包部署exe文件</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-29 14:05:00" itemprop="dateCreated datePublished" datetime="2019-06-29T14:05:00+08:00">2019-06-29</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-10 17:49:19" itemprop="dateModified" datetime="2019-10-10T17:49:19+08:00">2019-10-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="下载innosetup打包器"><a href="#下载innosetup打包器" class="headerlink" title="下载innosetup打包器"></a>下载innosetup打包器</h2><p><a href="https://file.zhuyeqingbook.cn/download/innosetup.zip" target="_blank" rel="noopener">下载地址: https://file.zhuyeqingbook.cn/download/innosetup.zip</a></p>
+<h2 id="安装后运行"><a href="#安装后运行" class="headerlink" title="安装后运行"></a>安装后运行</h2><ul>
+<li><p>选择新建脚本向导【CRTL+N】<br><img src="https://blog.zhuyeqingbook.cn/wp-content/uploads/2019/06/3F69VSZEL3KDHGHUT1HM-300x158.png" alt></p>
+</li>
+<li><p>下一步 输入必要的数据信息<br><img src="https://blog.zhuyeqingbook.cn/wp-content/uploads/2019/06/JR_CB4ZQHJAOZKNW-300x202.png" alt></p>
+</li>
+<li><p>选择运行exe文件 和依赖库<br><img src="https://blog.zhuyeqingbook.cn/wp-content/uploads/2019/06/K_FM5MRS7THB7S2JG_3JIA-300x185.png" alt></p>
+</li>
+<li><p>将打包后的安装文件放在依赖文件夹之外的地方即可<br><img src="https://blog.zhuyeqingbook.cn/wp-content/uploads/2019/06/H@TD3TIAC4HONLPK0YX-300x210.png" alt></p>
+</li>
+</ul>
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://mousemin.github.io/2019/06/28/bypy（百度网盘python客户端）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mousemin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mouse">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/06/28/bypy（百度网盘python客户端）/" class="post-title-link" itemprop="url">bypy（百度网盘python客户端）</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-28 15:32:00" itemprop="dateCreated datePublished" datetime="2019-06-28T15:32:00+08:00">2019-06-28</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-10 17:49:19" itemprop="dateModified" datetime="2019-10-10T17:49:19+08:00">2019-10-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><a href="https://github.com/houtianze/bypy" target="_blank" rel="noopener">bypy - Python client for Baidu Yun (Personal Cloud Storage) 百度云/百度网盘Python客户端</a></p><h2 id="安装bypy"><a href="#安装bypy" class="headerlink" title="安装bypy"></a>安装bypy</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install bypy</span><br></pre></td></tr></table></figure><h2 id="首次使用bypy设置token"><a href="#首次使用bypy设置token" class="headerlink" title="首次使用bypy设置token"></a>首次使用bypy设置token</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># bypy 首次命令会要求输入一个百度账号的token</span></span><br><span class="line">bypy list</span><br><span class="line"><span class="comment"># 然后会有一个网站链接， 用浏览器打开就能获取认证token</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2019/06/28/bypy（百度网盘python客户端）/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://mousemin.github.io/2019/06/23/redis分布式锁/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mousemin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mouse">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/06/23/redis分布式锁/" class="post-title-link" itemprop="url">redis分布式锁</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-23 14:08:00" itemprop="dateCreated datePublished" datetime="2019-06-23T14:08:00+08:00">2019-06-23</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-10 17:49:19" itemprop="dateModified" datetime="2019-10-10T17:49:19+08:00">2019-10-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="redis分布式锁"><a href="#redis分布式锁" class="headerlink" title="redis分布式锁"></a>redis分布式锁</h2><h3 id="setnx"><a href="#setnx" class="headerlink" title="setnx"></a>setnx</h3><p><code>lock</code>在redis中最简单的数据结构是<code>string</code>。最早的时候，上锁的操作一般使用<code>setnx</code>，这个命令是当<code>lock</code>不存在的时候<code>set</code>一个val。</p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">	$redis = <span class="keyword">new</span> Redis();</span><br><span class="line">	<span class="comment">// 连接操作</span></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	<span class="keyword">if</span> ($redis-&gt;setnx(<span class="string">'lock:string'</span>, <span class="number">1</span>)) &#123;</span><br><span class="line">		<span class="comment">// 添加锁的过期时间</span></span><br><span class="line">		$redis-&gt;expire(<span class="string">'lock:string'</span>, <span class="number">3600</span>);</span><br><span class="line">		<span class="comment">// 锁内操作</span></span><br><span class="line">		<span class="comment">// ...</span></span><br><span class="line">		<span class="comment">// 解锁</span></span><br><span class="line">		$redis-&gt;delete(<span class="string">'lock:string'</span>);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2019/06/23/redis分布式锁/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://mousemin.github.io/2019/06/03/redis源码解析（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mousemin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mouse">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/06/03/redis源码解析（一）/" class="post-title-link" itemprop="url">redis源码解析（一）</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-03 14:24:00" itemprop="dateCreated datePublished" datetime="2019-06-03T14:24:00+08:00">2019-06-03</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-10 17:49:19" itemprop="dateModified" datetime="2019-10-10T17:49:19+08:00">2019-10-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Redis是一个开源的使用ANSI C语言编写、遵守BSD协议、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。它通常被称为数据结构服务器，因为值（value）可以是 字符串(String), 哈希(Map), 列表(list), 集合(sets) 和 有序集合(sorted sets)等类型。</p>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2019/06/03/redis源码解析（一）/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://mousemin.github.io/2019/06/03/c语言中-attribute-的意义/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mousemin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mouse">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/06/03/c语言中-attribute-的意义/" class="post-title-link" itemprop="url">c语言中__attribute__的意义</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-03 12:07:00" itemprop="dateCreated datePublished" datetime="2019-06-03T12:07:00+08:00">2019-06-03</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-10 17:49:19" itemprop="dateModified" datetime="2019-10-10T17:49:19+08:00">2019-10-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="attribute-机制"><a href="#attribute-机制" class="headerlink" title="__attribute__机制"></a><code>__attribute__</code>机制</h3><p>GNU C 的一大特色就是<code>__attribute__</code>机制。<br><code>__attribute__</code>可以设置函数属性（Function Attribute）、变量属性（Variable Attribute）和类型属性（Type Attribute）。</p><h3 id="attribute-书写特征"><a href="#attribute-书写特征" class="headerlink" title="__attribute__书写特征"></a><code>__attribute__</code>书写特征</h3><p><code>__attribute__</code>前后都有两个下划线，并切后面会紧跟一对原括弧，括弧里面是相应的<code>__attribute__</code>参数。</p>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2019/06/03/c语言中-attribute-的意义/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://mousemin.github.io/2019/05/28/laravel学习-容器Container/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mousemin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mouse">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/05/28/laravel学习-容器Container/" class="post-title-link" itemprop="url">laravel学习-容器Container</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-28 23:31:00" itemprop="dateCreated datePublished" datetime="2019-05-28T23:31:00+08:00">2019-05-28</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-10 17:49:19" itemprop="dateModified" datetime="2019-10-10T17:49:19+08:00">2019-10-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PHP/" itemprop="url" rel="index"><span itemprop="name">PHP</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h2><p>EntryNotFoundException.php 容器对象未找到时,抛出此异常</p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Illuminate</span>\<span class="title">Container</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Exception</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Psr</span>\<span class="title">Container</span>\<span class="title">NotFoundExceptionInterface</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EntryNotFoundException</span> <span class="keyword">extends</span> <span class="title">Exception</span> <span class="keyword">implements</span> <span class="title">NotFoundExceptionInterface</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2019/05/28/laravel学习-容器Container/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://mousemin.github.io/2019/05/06/HTTP连接处理（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mousemin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mouse">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/05/06/HTTP连接处理（一）/" class="post-title-link" itemprop="url">HTTP连接处理（一）</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-06 23:28:00" itemprop="dateCreated datePublished" datetime="2019-05-06T23:28:00+08:00">2019-05-06</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-10 17:49:19" itemprop="dateModified" datetime="2019-10-10T17:49:19+08:00">2019-10-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Tcp-Ip/" itemprop="url" rel="index"><span itemprop="name">Tcp/Ip</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="常被误解的Connection首部"><a href="#常被误解的Connection首部" class="headerlink" title="常被误解的Connection首部"></a>常被误解的Connection首部</h2><p>HTTP允许在客户端和源端服务器之间存在一串HTTP中间实体（代理、高速缓存等）。可以从客户端开始，逐跳的将HTTP报文经过这些中间设备，转发到源端服务器上去（或者反向代理）</p><p>在某些情况下， 两个相邻的HTTP应用程序会为他们共享的连接应用一组选项。HTTP报文中<code>Connection</code>字段有一个由逗号分隔的<code>连接标签</code>列表，这些标签为连接指定了一些不会传播到其他连接中的选项。比如，可以用<code>Connection: close</code>来说明发送完报文之后必须关闭连接。</p>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2019/05/06/HTTP连接处理（一）/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://mousemin.github.io/2019/05/05/常见的HTTP状态码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mousemin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mouse">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/05/05/常见的HTTP状态码/" class="post-title-link" itemprop="url">常见的HTTP状态码</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-05 11:40:00" itemprop="dateCreated datePublished" datetime="2019-05-05T11:40:00+08:00">2019-05-05</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-10 17:49:19" itemprop="dateModified" datetime="2019-10-10T17:49:19+08:00">2019-10-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Tcp-Ip/" itemprop="url" rel="index"><span itemprop="name">Tcp/Ip</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="三至七种最基本的响应代码"><a href="#三至七种最基本的响应代码" class="headerlink" title="三至七种最基本的响应代码"></a>三至七种最基本的响应代码</h2><ul>
+<li>200(“OK”)<br>一切正常。实体主体中的文档（若存在的话）是某资源的表示。</li>
+<li>500(“Bad Request”)<br>客户端方面的问题。实体主题中的文档（若存在的话）是一个错误消息。希望客户端能够理解此错误消息，并改正问题。</li>
+<li>500(“Internal Server Error”)<br>服务期方面的问题。实体主体中的文档（如果存在的话）是一个错误消息。该错误消息通常无济于事，因为客户端无法修复服务器方面的问题。</li>
+<li>301(“Moved Permanently”)<br>当客户端触发的动作引起了资源URI的变化时发送此响应代码。另外，当客户端向一个资源的旧URI发送请求时，也发送此响应代码。</li>
+<li>404(“Not Found”) 和410(“Gone”)<br>当客户端所请求的URI不对应于任何资源时，发送此响应代码。404用于服务器端不知道客户端要请求哪个资源的情况；410用于服务器端知道客户端所请求的资源曾经存在，但现在已经不存在了的情况。</li>
+<li>409(“Conflict”)<br>当客户端试图执行一个”会导致一个或多个资源处于不一致状态“的操作时，发送此响应代码。</li>
+</ul>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2019/05/05/常见的HTTP状态码/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+  </div>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">mousemin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mousemin</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

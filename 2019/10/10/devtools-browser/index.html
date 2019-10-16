@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=7.4.0">
+  <link rel="mask-icon" href="/images/favicon.ico?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Mouse" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="浏览器域定义用于浏览器管理的方法和事件MethodsBrowser.setPermission设置给定来源的权限设置[实验性质]参数 origin string 许可适用的来源。 permission PermissionDescriptor 覆盖权限的描述符。 setting PermissionSetting 权限的设置。 browserContextId[optional] Target.T">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Chrome Devtools Browser">
+<meta property="og:url" content="https://mousemin.github.io/2019/10/10/devtools-browser/index.html">
+<meta property="og:site_name" content="Mouse">
+<meta property="og:description" content="浏览器域定义用于浏览器管理的方法和事件MethodsBrowser.setPermission设置给定来源的权限设置[实验性质]参数 origin string 许可适用的来源。 permission PermissionDescriptor 覆盖权限的描述符。 setting PermissionSetting 权限的设置。 browserContextId[optional] Target.T">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-10T09:49:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chrome Devtools Browser">
+<meta name="twitter:description" content="浏览器域定义用于浏览器管理的方法和事件MethodsBrowser.setPermission设置给定来源的权限设置[实验性质]参数 origin string 许可适用的来源。 permission PermissionDescriptor 覆盖权限的描述符。 setting PermissionSetting 权限的设置。 browserContextId[optional] Target.T">
+  <link rel="canonical" href="https://mousemin.github.io/2019/10/10/devtools-browser/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Chrome Devtools Browser | Mouse</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mouse</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://mousemin.github.io/2019/10/10/devtools-browser/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="mousemin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mouse">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Chrome Devtools Browser
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-10 15:15:29 / 修改时间：17:49:19" itemprop="dateCreated datePublished" datetime="2019-10-10T15:15:29+08:00">2019-10-10</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/chrome-devtools-protocol/" itemprop="url" rel="index"><span itemprop="name">chrome devtools protocol</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>浏览器域定义用于浏览器管理的方法和事件</p><h2 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h2><h3 id="Browser-setPermission"><a href="#Browser-setPermission" class="headerlink" title="Browser.setPermission"></a>Browser.setPermission</h3><p>设置给定来源的权限设置<font color="red">[实验性质]</font></p><h4 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>origin <strong>string</strong> 许可适用的来源。</li>
+<li>permission <strong>PermissionDescriptor</strong> 覆盖权限的描述符。</li>
+<li>setting <strong>PermissionSetting</strong> 权限的设置。</li>
+<li>browserContextId<font color="blue">[optional]</font> <strong>Target.TargetID</strong> 要覆盖的上下文。 如果省略，则使用默认浏览器上下文</li>
+</ul><a id="more"></a>
+
+
+<h3 id="Browser-grantPermissions"><a href="#Browser-grantPermissions" class="headerlink" title="Browser.grantPermissions"></a>Browser.grantPermissions</h3><p>授予给定来源特定的权限，拒绝所有其他权限<font color="red">[实验性质]</font></p>
+<h4 id="参数-1"><a href="#参数-1" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>origin <strong>string</strong> 许可适用的来源。</li>
+<li>permissions <strong>array PermissionDescriptor</strong> 覆盖权限的描述符。</li>
+<li>browserContextId<font color="blue">[optional]</font> <strong>Target.BrowserContextID</strong> BrowserContext覆盖权限。 如果省略，则使用默认浏览器上下文</li>
+</ul>
+<h3 id="Browser-resetPermissions"><a href="#Browser-resetPermissions" class="headerlink" title="Browser.resetPermissions"></a>Browser.resetPermissions</h3><p>重置所有来源的所有权限管理<font color="red">[实验性质]</font></p>
+<h4 id="参数-2"><a href="#参数-2" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>browserContextId<font color="blue">[optional]</font> <strong>Target.BrowserContextID</strong> BrowserContext重置权限。 如果省略，则使用默认浏览器上下文。</li>
+</ul>
+<h3 id="Browser-close"><a href="#Browser-close" class="headerlink" title="Browser.close"></a>Browser.close</h3><p>正常关闭浏览器</p>
+<h3 id="Browser-crash"><a href="#Browser-crash" class="headerlink" title="Browser.crash"></a>Browser.crash</h3><p>在主线程上使浏览器崩溃<font color="red">[实验性质]</font></p>
+<h3 id="Browser-crashGpuProcess"><a href="#Browser-crashGpuProcess" class="headerlink" title="Browser.crashGpuProcess"></a>Browser.crashGpuProcess</h3><p>导致GPU进程崩溃<font color="red">[实验性质]</font></p>
+<h3 id="Browser-getVersion"><a href="#Browser-getVersion" class="headerlink" title="Browser.getVersion"></a>Browser.getVersion</h3><p>返回版本信息</p>
+<h4 id="返回"><a href="#返回" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>protocolVersion <strong>string</strong>  协议版本</li>
+<li>product <strong>string</strong> 产品名称</li>
+<li>revision <strong>string</strong> 产品版本</li>
+<li>userAgent <strong>string</strong> User-Agent</li>
+<li>jsVersion <strong>string</strong> v8引擎版本</li>
+</ul>
+<h3 id="Browser-getBrowserCommandLine"><a href="#Browser-getBrowserCommandLine" class="headerlink" title="Browser.getBrowserCommandLine"></a>Browser.getBrowserCommandLine</h3><p>仅当且仅当返回浏览器进程的命令行开关时，</p>
+<ul>
+<li>–enable-automation<br><font color="red">[实验性质]</font></li>
+</ul>
+<h4 id="返回-1"><a href="#返回-1" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>arguments <strong>array [string]</strong> 命令行参数</li>
+</ul>
+<h3 id="Browser-getHistograms"><a href="#Browser-getHistograms" class="headerlink" title="Browser.getHistograms"></a>Browser.getHistograms</h3><p>获取Chrome直方图<font color="red">[实验性质]</font></p>
+<h4 id="参数-3"><a href="#参数-3" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>query<font color="blue">[optional]</font> <strong>string</strong> 请求的子字符串名称。 仅提取名称中带有查询作为子字符串的直方图。 空查询或缺席查询将返回所有直方图。</li>
+<li>delta<font color="blue">[optional]</font> <strong>boolean</strong> 如果为true，则检索自上次调用以来的增量。</li>
+</ul>
+<h4 id="返回-2"><a href="#返回-2" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>histograms <strong>array Histogram</strong> 直方图</li>
+</ul>
+<h3 id="Browser-getHistogram"><a href="#Browser-getHistogram" class="headerlink" title="Browser.getHistogram"></a>Browser.getHistogram</h3><p>按名称获取Chrome直方图<font color="red">[实验性质]</font></p>
+<h4 id="参数-4"><a href="#参数-4" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>name <strong>string</strong> 要求的直方图名称</li>
+<li>delta<font color="blue">[optional]</font> <strong>boolean</strong> 如果为true，则检索自上次调用以来的增量。</li>
+</ul>
+<h4 id="返回-3"><a href="#返回-3" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>histogram <strong>Histogram</strong> 直方图</li>
+</ul>
+<h3 id="Browser-getWindowBounds"><a href="#Browser-getWindowBounds" class="headerlink" title="Browser.getWindowBounds"></a>Browser.getWindowBounds</h3><p>获取浏览器窗口的位置和大小<font color="red">[实验性质]</font></p>
+<h4 id="参数-5"><a href="#参数-5" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>windowId <strong>WindowID</strong> 浏览器窗口ID</li>
+</ul>
+<h4 id="返回-4"><a href="#返回-4" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>bounds <strong>Bounds</strong> 窗口的边界信息。 当窗口状态为“最小化”时，将返回还原的窗口位置和大小。</li>
+</ul>
+<h3 id="Browser-getWindowForTarget"><a href="#Browser-getWindowForTarget" class="headerlink" title="Browser.getWindowForTarget"></a>Browser.getWindowForTarget</h3><p>获取包含devtools目标的浏览器窗口<font color="red">[实验性质]</font></p>
+<h4 id="参数-6"><a href="#参数-6" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>targetId<font color="blue">[optional]</font> <strong>Target.TargetID</strong> Devtools代理主机标识。 如果作为会话的一部分进行调用，则使用关联的targetId。</li>
+</ul>
+<h4 id="返回-5"><a href="#返回-5" class="headerlink" title="返回"></a>返回</h4><ul>
+<li>windowId <strong>WindowID</strong> 浏览器窗口ID</li>
+<li>bounds <strong>Bounds</strong> 窗口的边界信息。 当窗口状态为“最小化”时，将返回还原的窗口位置和大小</li>
+</ul>
+<h3 id="Browser-setWindowBounds"><a href="#Browser-setWindowBounds" class="headerlink" title="Browser.setWindowBounds"></a>Browser.setWindowBounds</h3><p>设置浏览器窗口的位置和/或大小<font color="red">[实验性质]</font></p>
+<h4 id="参数-7"><a href="#参数-7" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>windowId <strong>WindowID</strong> 浏览器窗口ID</li>
+<li>bounds <strong>Bounds</strong> 新窗口边界。 “最小化”，“最大化”和“全屏”状态不能与“左”，“上”，“宽度”或“高度”组合使用。 保留未指定的字段不变。</li>
+</ul>
+<h3 id="Browser-setDockTile"><a href="#Browser-setDockTile" class="headerlink" title="Browser.setDockTile"></a>Browser.setDockTile</h3><p>设置特定平台的停靠图块详细信息<font color="red">[实验性质]</font></p>
+<h4 id="参数-8"><a href="#参数-8" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>badgeLabel<font color="blue">[optional]</font> <strong>string</strong></li>
+<li>image<font color="blue">[optional]</font> <strong>string</strong> Png编码的图像</li>
+</ul>
+<h2 id="Types"><a href="#Types" class="headerlink" title="Types"></a>Types</h2><h3 id="WindowID"><a href="#WindowID" class="headerlink" title="WindowID"></a>WindowID</h3><p><font color="red">[实验性质]</font></p>
+<p>Type: <strong>integer</strong></p>
+<h3 id="WindowState"><a href="#WindowState" class="headerlink" title="WindowState"></a>WindowState</h3><p>浏览器窗口的状态<font color="red">[实验性质]</font></p>
+<p>Type: <strong>string</strong></p>
+<p><strong>允许值:</strong> <code>normal</code>, <code>minimized</code>, <code>maximized</code>, <code>fullscreen</code></p>
+<h3 id="Bounds"><a href="#Bounds" class="headerlink" title="Bounds"></a>Bounds</h3><p>浏览器窗口边界信息<font color="red">[实验性质]</font></p>
+<p>Type: <strong>Object</strong></p>
+<h4 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h4><ul>
+<li>left<font color="blue">[optional]</font> <strong>integer</strong> 从屏幕左边缘到窗口的偏移量（以像素为单位）</li>
+<li>top<font color="blue">[optional]</font> <strong>integer</strong> 从从屏幕顶部到窗口的偏移量（以像素为单位）</li>
+<li>width<font color="blue">[optional]</font> <strong>integer</strong> 窗口宽度（以像素为单位）</li>
+<li>height<font color="blue">[optional]</font> <strong>integer</strong> 窗口高度（以像素为单位）</li>
+<li>windowState<font color="blue">[optional]</font> <strong>WindowState</strong> 窗口状态。 默认为<code>normal</code></li>
+</ul>
+<h3 id="PermissionType"><a href="#PermissionType" class="headerlink" title="PermissionType"></a>PermissionType</h3><p><font color="red">[实验性质]</font></p>
+<p>Type: <strong>string</strong></p>
+<p><strong>允许值:</strong> <code>accessibilityEvents</code>, <code>audioCapture</code>, <code>backgroundSync</code>, <code>backgroundFetch</code>, <code>clipboardRead</code>, <code>clipboardWrite</code>, <code>durableStorage</code>, <code>flash</code>, <code>geolocation</code>, <code>midi</code>, <code>midiSysex</code>, <code>notifications</code>, <code>paymentHandler</code>, <code>periodicBackgroundSync</code>, <code>protectedMediaIdentifier</code>, <code>sensors</code>, <code>videoCapture</code>, <code>idleDetection</code>, <code>wakeLockScreen</code>, <code>wakeLockSystem</code></p>
+<h3 id="PermissionSetting"><a href="#PermissionSetting" class="headerlink" title="PermissionSetting"></a>PermissionSetting</h3><p><font color="red">[实验性质]</font></p>
+<p>Type: <strong>string</strong></p>
+<p><strong>允许值:</strong> <code>granted</code>, <code>denied</code>, <code>prompt</code></p>
+<h3 id="PermissionDescriptor"><a href="#PermissionDescriptor" class="headerlink" title="PermissionDescriptor"></a>PermissionDescriptor</h3><p>Permissions API中定义的PermissionDescriptor的定义：<a href="https://w3c.github.io/permissions/#dictdef-permissiondescriptor" target="_blank" rel="noopener">https://w3c.github.io/permissions/#dictdef-permissiondescriptor</a><font color="red">[实验性质]</font></p>
+<p>Type: <strong>Object</strong></p>
+<h4 id="数据结构-1"><a href="#数据结构-1" class="headerlink" title="数据结构"></a>数据结构</h4><ul>
+<li>name <strong>string</strong> 许可名称。 有关有效的权限名称，请参见<a href="https://cs.chromium.org/chromium/src/third_party/blink/renderer/modules/permissions/permission_descriptor.idl" target="_blank" rel="noopener">https://cs.chromium.org/chromium/src/third_party/blink/renderer/modules/permissions/permission_descriptor.idl</a>。</li>
+<li>sysex<font color="blue">[optional]</font> <strong>boolean</strong> 对于“ midi”权限，还可以指定sysex控件。</li>
+<li>userVisibleOnly<font color="blue">[optional]</font> <strong>boolean</strong> 对于“push”权限，可以指定userVisibleOnly。 请注意，userVisibleOnly = true是当前唯一支持的类型。</li>
+<li>type<font color="blue">[optional]</font> <strong>string</strong> 对于“wake-lock”权限，必须将类型指定为“screen”或“system”。</li>
+</ul>
+<h3 id="Bucket"><a href="#Bucket" class="headerlink" title="Bucket"></a>Bucket</h3><p>铬直方图桶<font color="red">[实验性质]</font></p>
+<p>Type: <strong>Object</strong></p>
+<h4 id="数据结构-2"><a href="#数据结构-2" class="headerlink" title="数据结构"></a>数据结构</h4><ul>
+<li>low <strong>integer</strong> 最小值（包含当前值）。</li>
+<li>high <strong>integer</strong> 最大值（包含当前值）。</li>
+<li>count <strong>integer</strong> 样本数</li>
+</ul>
+<h3 id="Histogram"><a href="#Histogram" class="headerlink" title="Histogram"></a>Histogram</h3><p>铬直方图<font color="red">[实验性质]</font></p>
+<p>Type: <strong>Object</strong></p>
+<h4 id="数据结构-3"><a href="#数据结构-3" class="headerlink" title="数据结构"></a>数据结构</h4><ul>
+<li>name <strong>string</strong> 名称</li>
+<li>sum <strong>integer</strong> 样本值的总和</li>
+<li>count <strong>integer</strong> 样本数</li>
+<li>buckets <strong>array Bucket</strong> </li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/10/09/golang语言结构/" rel="next" title="golang语言结构">
+                  <i class="fa fa-chevron-left"></i> golang语言结构
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/10/10/devtools-debugger/" rel="prev" title="Chrome Devtools Debugger">
+                  Chrome Devtools Debugger <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Methods"><span class="nav-number">1.</span> <span class="nav-text">Methods</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Browser-setPermission"><span class="nav-number">1.1.</span> <span class="nav-text">Browser.setPermission</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数"><span class="nav-number">1.1.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Browser-grantPermissions"><span class="nav-number">1.2.</span> <span class="nav-text">Browser.grantPermissions</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Browser-resetPermissions"><span class="nav-number">1.3.</span> <span class="nav-text">Browser.resetPermissions</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-2"><span class="nav-number">1.3.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Browser-close"><span class="nav-number">1.4.</span> <span class="nav-text">Browser.close</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Browser-crash"><span class="nav-number">1.5.</span> <span class="nav-text">Browser.crash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Browser-crashGpuProcess"><span class="nav-number">1.6.</span> <span class="nav-text">Browser.crashGpuProcess</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Browser-getVersion"><span class="nav-number">1.7.</span> <span class="nav-text">Browser.getVersion</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#返回"><span class="nav-number">1.7.1.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Browser-getBrowserCommandLine"><span class="nav-number">1.8.</span> <span class="nav-text">Browser.getBrowserCommandLine</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-1"><span class="nav-number">1.8.1.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Browser-getHistograms"><span class="nav-number">1.9.</span> <span class="nav-text">Browser.getHistograms</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-3"><span class="nav-number">1.9.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-2"><span class="nav-number">1.9.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Browser-getHistogram"><span class="nav-number">1.10.</span> <span class="nav-text">Browser.getHistogram</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-4"><span class="nav-number">1.10.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-3"><span class="nav-number">1.10.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Browser-getWindowBounds"><span class="nav-number">1.11.</span> <span class="nav-text">Browser.getWindowBounds</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-5"><span class="nav-number">1.11.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-4"><span class="nav-number">1.11.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Browser-getWindowForTarget"><span class="nav-number">1.12.</span> <span class="nav-text">Browser.getWindowForTarget</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-6"><span class="nav-number">1.12.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回-5"><span class="nav-number">1.12.2.</span> <span class="nav-text">返回</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Browser-setWindowBounds"><span class="nav-number">1.13.</span> <span class="nav-text">Browser.setWindowBounds</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-7"><span class="nav-number">1.13.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Browser-setDockTile"><span class="nav-number">1.14.</span> <span class="nav-text">Browser.setDockTile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数-8"><span class="nav-number">1.14.1.</span> <span class="nav-text">参数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Types"><span class="nav-number">2.</span> <span class="nav-text">Types</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WindowID"><span class="nav-number">2.1.</span> <span class="nav-text">WindowID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WindowState"><span class="nav-number">2.2.</span> <span class="nav-text">WindowState</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bounds"><span class="nav-number">2.3.</span> <span class="nav-text">Bounds</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据结构"><span class="nav-number">2.3.1.</span> <span class="nav-text">数据结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PermissionType"><span class="nav-number">2.4.</span> <span class="nav-text">PermissionType</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PermissionSetting"><span class="nav-number">2.5.</span> <span class="nav-text">PermissionSetting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PermissionDescriptor"><span class="nav-number">2.6.</span> <span class="nav-text">PermissionDescriptor</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据结构-1"><span class="nav-number">2.6.1.</span> <span class="nav-text">数据结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bucket"><span class="nav-number">2.7.</span> <span class="nav-text">Bucket</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据结构-2"><span class="nav-number">2.7.1.</span> <span class="nav-text">数据结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Histogram"><span class="nav-number">2.8.</span> <span class="nav-text">Histogram</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据结构-3"><span class="nav-number">2.8.1.</span> <span class="nav-text">数据结构</span></a></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">mousemin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mousemin</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
